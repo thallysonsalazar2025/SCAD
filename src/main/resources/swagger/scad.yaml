@@ -47,31 +47,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
     get:
       tags:
         - Autores
-      summary: Lista autores com filtros opcionais
-      description: >
-        Retorna uma lista de autores cadastrados no sistema.
-        A lista pode ser filtrada opcionalmente por país de nacionalidade e/ou por nome.
-        Se nenhum filtro for fornecido, todos os autores serão retornados.
+      summary: Retorna uma lista de autores cadastrados
+      description: Retorna uma lista de autores cadastrados no sistema.
       operationId: getAllAuthors
-      parameters:
-        - name: nacionalityCountry
-          in: query
-          description: Filtra autores pelo país de nacionalidade. A busca é case-insensitive.
-          required: false
-          schema:
-            type: string
-            example: Brasil
-        - name: name
-          in: query
-          description: Filtra autores cujo nome contém o valor fornecido. A busca é case-insensitive.
-          required: false
-          schema:
-            type: string
-            example: Maria
       responses:
         '200':
           description: Lista de autores retornada com sucesso.
