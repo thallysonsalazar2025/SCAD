@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: Produtos Api
+  datasource:
+    url: jdbc:mysql://localhost:3306/cadastro_produtos?useTimezone=true&serverTimezone=UTC
+    username: root
+    password: '*124376*' # É uma boa prática colocar senhas e valores com caracteres especiais entre aspas
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  output:
+    ansi:
+      enabled: ALWAYS
+
+server:
+  servlet:
+    context-path: /api/v1
+  
