@@ -2,7 +2,7 @@ package br.com.scad.scad;
 
 import br.com.scad.scad.domain.Author;
 import br.com.scad.scad.domain.Book;
-import br.com.scad.scad.domain.PersonGenereEnum;
+import br.com.scad.scad.domain.GenreEnum;
 import br.com.scad.scad.repository.AuthorRepository;
 import br.com.scad.scad.repository.BookRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -65,13 +66,13 @@ public class BookCadTest {
         Book book = new Book();
         book.setTitle("BRexis");
         book.setAuthor(author);
-        book.setGenre(PersonGenereEnum.ACTION);
+        book.setGenre(GenreEnum.ACTION);
 
 
         Book book2 = new Book();
         book2.setTitle("Bosnia resurci");
         book.setAuthor(author);
-        book.setGenre(PersonGenereEnum.SUSPENSE);
+        book.setGenre(GenreEnum.SUSPENSE);
 
         // CORREÇÃO: A relação bidirecional deve ser estabelecida para AMBOS os livros.
         // O autor deve ser definido em cada livro.
@@ -98,8 +99,8 @@ public class BookCadTest {
     private List<Book> mockGetbyBooks() {
         Book book = new Book();
         book.setIsbn("Matrix");
-        book.setGenre(PersonGenereEnum.TERROR);
-        book.setPrice(priceIs);
+        book.setGenre(GenreEnum.TERROR);
+        book.setPrice(BigDecimal.valueOf(priceIs));
         book.setTitle("007");
         book.setDatePublisher(datePublisher);
         return List.of(book);

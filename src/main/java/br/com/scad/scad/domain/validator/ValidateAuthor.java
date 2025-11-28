@@ -2,9 +2,11 @@ package br.com.scad.scad.domain.validator;
 
 import br.com.scad.scad.domain.Author;
 import br.com.scad.scad.domain.exception.AuthorException;
+import br.com.scad.scad.generated.model.BookRequest;
 import br.com.scad.scad.repository.AuthorRepository;
 import br.com.scad.scad.repository.BookRepository;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -20,11 +22,11 @@ public class ValidateAuthor {
         this.bookRepository = bookRepository;
     }
 
-
     public void validateAuthor(String name, LocalDate dateBirth, String nacionalityCountry) throws AuthorException{
         if (repository.existsByNameAndDateBirthAndNacionalityCountry(name, dateBirth, nacionalityCountry)) {
             throw new AuthorException("Já existe um autor cadastrado com estes dados.");
         }
+
     }
 
     /**
