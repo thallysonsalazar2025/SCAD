@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Mapper para a entidade Book e seus DTOs.
@@ -27,7 +28,11 @@ public interface BookMapper {
      * Converte uma entidade Book para o DTO BookResponse (incluindo o autor).
      * Este é o mapeamento padrão.
      */
+    // O MapStruct é inteligente: ele vê que o campo 'author' no BookResponse é do tipo AuthorSummaryResponse
+    // e procura no AuthorMapper (declarado em 'uses') um método que converta Author -> AuthorSummaryResponse.
+    // Ele encontrará 'toAuthorSummaryResponse' e o usará automaticamente.
     BookResponse toBookResponse(Book book);
+
 
     /**
      * Converte uma entidade Book para o DTO BookResponse, mas IGNORA o campo 'author'.
@@ -43,4 +48,7 @@ public interface BookMapper {
      * Este método usará o toBookResponse padrão.
      */
     List<BookResponse> toBookResponseList(List<Book> books);
+
+
+
 }
