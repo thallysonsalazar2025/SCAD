@@ -1,0 +1,50 @@
+package br.com.scad.scad.domain.exception;
+
+import br.com.scad.scad.generated.model.ErrorResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.stream.Collectors;
+
+@RestControllerAdvice
+public class RestExceptionHandler {
+
+    @ExceptionHandler(AuthorException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorException(AuthorException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setCode(ex.getClass().getSimpleName());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponse handleConstraintViolationException(ConstraintViolationException ex) {
+        //todo  Extrai APENAS a mensagem de cada violação e as une em uma única string.
+        String errorMessage = ex.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(", "));
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(errorMessage);
+        errorResponse.setCode("ValidationError");
+        return errorResponse;
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleGenericException(Exception ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage("An unexpected error occurred: " + ex.getMessage());
+        errorResponse.setCode("InternalServerError");
+        return errorResponse;
+    }
+
+
+}

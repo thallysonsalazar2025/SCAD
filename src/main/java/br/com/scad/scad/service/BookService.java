@@ -6,6 +6,7 @@ import br.com.scad.scad.domain.validator.ValidateBook;
 import br.com.scad.scad.generated.model.BookRequest;
 import br.com.scad.scad.repository.AuthorRepository;
 import br.com.scad.scad.repository.BookRepository;
+import br.com.scad.scad.repository.specs.BookSpecs;
 import br.com.scad.scad.service.mapper.BookMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import static br.com.scad.scad.repository.specs.BookSpecs.isbnEqual;
 
 @Service
 @Transactional
@@ -76,6 +79,7 @@ public class BookService {
 
     @Transactional(readOnly = true)
     public List<Book> findAllBooks(String title, String isbn, LocalDate datePublisher) {
+        isbnEqual(isbn);
         return bookRepository.findAll();
     }
 
