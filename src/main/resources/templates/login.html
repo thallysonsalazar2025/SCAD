@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Livraria</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .login-container {
+            height: 100vh;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .logo {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid login-container">
+    <div class="row h-100">
+
+        <!-- Formulário -->
+        <div class="col-md-4 d-flex justify-content-center align-items-center">
+            <div class="login-box w-100">
+
+                <div class="text-center">
+                    <img src="https://cdn-icons-png.flaticon.com/512/29/29302.png" class="logo" alt="Logo Livraria">
+                    <h3 class="mb-4">Livraria Online</h3>
+                </div>
+
+                <form method="post" th:action="@{/login}">
+                    <div class="mb-3">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Digite seu usuario" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Senha</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Digite sua senha" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Entrar</button>
+
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-decoration-none">Esqueceu sua senha?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Carrossel -->
+        <div class="col-md-8 d-none d-md-block p-0">
+            <div id="carouselLivraria" class="carousel slide h-100" data-bs-ride="carousel">
+                <div class="carousel-inner h-100">
+
+                    <div class="carousel-item active h-100">
+                        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794"
+                             class="d-block w-100 h-100" style="object-fit: cover;">
+                    </div>
+
+                    <div class="carousel-item h-100">
+                        <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f"
+                             class="d-block w-100 h-100" style="object-fit: cover;">
+                    </div>
+
+                    <div class="carousel-item h-100">
+                        <img src="https://images.unsplash.com/photo-1496104679561-38d3af0b1a0f"
+                             class="d-block w-100 h-100" style="object-fit: cover;">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
