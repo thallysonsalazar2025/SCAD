@@ -17,9 +17,12 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
                 .csrf(AbstractHttpConfigurer::disable) //todo  desabilita a config para fazer a seguraça do front onde o front é obrigado a enviar um token para o back
-                .formLogin(configurer -> configurer.loginPage("login.html").successForwardUrl("home.html")) //todo habilida o form padrão e injeta um target para a pagina
-                .formLogin(Customizer.withDefaults()) //todo adiciona o form padrão
-                .httpBasic(Customizer.withDefaults()) //todo adiciona o autenticação basic
+//                .formLogin(configurer -> configurer.loginPage("login.html").successForwardUrl("home.html")) //todo habilida o form padrão e injeta um target para a pagina
+//                .formLogin(Customizer.withDefaults()) //todo adiciona o form padrão
+                .formLogin(configurer -> {
+                    configurer.loginPage("/login").permitAll();
+                })
+                .httpBasic(Customizer.withDefaults()) //todo adiciona o autenticação basic sem ela autenticação nao funciona
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.anyRequest().authenticated()) // todo qualquer requisição deve estar autenticado
                 .build();
