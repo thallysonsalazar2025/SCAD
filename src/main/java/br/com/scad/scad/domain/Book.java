@@ -1,6 +1,7 @@
 package br.com.scad.scad.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -29,6 +30,11 @@ public class Book {
 
     @Past(message = "Data não pode ser futura")
     private LocalDate datePublisher;
+    @JsonIgnore
+    private Integer sizePage;
+    @JsonIgnore
+    private Integer numberOfPage;
+
 
     private BigDecimal price;
 

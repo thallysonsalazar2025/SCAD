@@ -1,35 +1,30 @@
 package br.com.scad.scad.service.delegateApi;
 
 import br.com.scad.scad.domain.Book;
-import br.com.scad.scad.domain.validator.ValidateBook;
 import br.com.scad.scad.generated.api.BooksApiDelegate;
+import br.com.scad.scad.generated.model.BookPage;
 import br.com.scad.scad.generated.model.BookRequest;
 import br.com.scad.scad.generated.model.BookResponse;
-import br.com.scad.scad.repository.AuthorRepository;
-import br.com.scad.scad.repository.BookRepository;
 import br.com.scad.scad.service.BookService;
 import br.com.scad.scad.service.mapper.BookMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class BookApiDelegateImpl implements BooksApiDelegate {
 
-    private final BookRepository bookRepository;
-    private final AuthorRepository authorRepository;
     private final BookMapper bookMapper;
-    private final ValidateBook validateBook;
     private final BookService bookService;
 
-    public BookApiDelegateImpl(BookRepository bookRepository, AuthorRepository authorRepository, BookMapper bookMapper, ValidateBook validateBook, BookService bookService) {
-        this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;
+    public BookApiDelegateImpl(BookMapper bookMapper, BookService bookService) {
         this.bookMapper = bookMapper;
-        this.validateBook = validateBook;
         this.bookService = bookService;
     }
 
@@ -57,5 +52,15 @@ public class BookApiDelegateImpl implements BooksApiDelegate {
     public ResponseEntity<Void> deleteBook(Long id) {
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<BookPage> getAllBooks(String title, String isbn,
+                                                LocalDate datePublisher,
+                                                Integer page, Integer size,
+                                                List<String> sort) {
+
+        Page<Book> response = bookService.findAllBooks(title, isbn, datePublisher, size, page);
+        return ResponseEntity.ok(bookMapper.toBookPage(response));
     }
 }

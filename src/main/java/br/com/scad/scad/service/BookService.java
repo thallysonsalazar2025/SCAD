@@ -6,17 +6,19 @@ import br.com.scad.scad.domain.validator.ValidateBook;
 import br.com.scad.scad.generated.model.BookRequest;
 import br.com.scad.scad.repository.AuthorRepository;
 import br.com.scad.scad.repository.BookRepository;
-import br.com.scad.scad.repository.specs.BookSpecs;
 import br.com.scad.scad.service.mapper.BookMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
-import static br.com.scad.scad.repository.specs.BookSpecs.isbnEqual;
+import static br.com.scad.scad.repository.specs.BookSpecs.requestPageableAndValidParamsForData;
 
 @Service
 @Transactional
@@ -68,19 +70,17 @@ public class BookService {
     }
 
     @Transactional
-    public boolean deleteBook(Long id) {
-        return bookRepository.findById(id)
-                .map(book -> {
-                    bookRepository.delete(book);
-                    return true;
-                })
-                .orElse(false);
+    public void deleteBook(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found with ID: " + id));
+        bookRepository.delete(book);
     }
 
     @Transactional(readOnly = true)
-    public List<Book> findAllBooks(String title, String isbn, LocalDate datePublisher) {
-        isbnEqual(isbn);
-        return bookRepository.findAll();
+    public Page<Book> findAllBooks(String title, String isbn, LocalDate datePublisher, Integer sizePage, Integer numberOfPage) {
+        Specification<Book> specs = requestPageableAndValidParamsForData(title, isbn, datePublisher);
+        Pageable pageable = PageRequest.of(numberOfPage, sizePage);
+        return bookRepository.findAll(specs, pageable);
     }
 
 

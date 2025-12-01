@@ -1,14 +1,13 @@
 package br.com.scad.scad.service.mapper;
 
 import br.com.scad.scad.domain.Book;
+import br.com.scad.scad.generated.model.BookPage;
 import br.com.scad.scad.generated.model.BookRequest;
 import br.com.scad.scad.generated.model.BookResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.domain.Page;
 
 /**
  * Mapper para a entidade Book e seus DTOs.
@@ -23,6 +22,10 @@ public interface BookMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
     Book toCreateBookEntity(BookRequest bookRequest);
+
+//    @Mapping(target = "id", ignore = true)
+//    @Mapping(target = "author", ignore = true)
+//    List<BooksOfAuthorResponse> toCreateBookEntityBooksOfAuthorResponse(BookRequest bookRequest);
 
     /**
      * Converte uma entidade Book para o DTO BookResponse (incluindo o autor).
@@ -43,12 +46,7 @@ public interface BookMapper {
     @Mapping(target = "author", ignore = true)
     BookResponse toBookResponseWithoutAuthor(Book book);
 
-    /**
-     * Converte uma lista de entidades Book para uma lista de DTOs BookResponse.
-     * Este método usará o toBookResponse padrão.
-     */
-    List<BookResponse> toBookResponseList(List<Book> books);
 
-
+    BookPage toBookPage(Page<Book> response);
 
 }
