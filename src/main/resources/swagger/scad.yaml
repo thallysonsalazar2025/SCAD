@@ -7,6 +7,8 @@ info:
 tags:
   - name: Autores
     description: Operações relacionadas a autores
+  - name: Usuários
+    description: Operações relacionadas a usuários
   - name: Livros
     description: Operações relacionadas a livros
 
@@ -147,6 +149,36 @@ paths:
           description: Autor não encontrado.
         default:
           description: Erro inesperado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /users:
+    post:
+      tags:
+        - Usuários
+      summary: Cadastra um novo usuário
+      operationId: registerUser
+      description: Cria um novo usuário no sistema. A senha deve ter no mínimo 6 caracteres.
+      requestBody:
+        description: Objeto com os dados do usuário a ser criado.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+      responses:
+        '201':
+          description: Usuário cadastrado com sucesso. O Header 'Location' conterá a URL para o novo usuário.
+        '400':
+          description: "Requisição inválida  JSON mal formatado"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '422':
+          description: "Erro de validação campo obrigatório faltando, CPF já existente"
           content:
             application/json:
               schema:
@@ -372,6 +404,72 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BookResponse'
+
+    # === Schemas de Usuário ===
+    UserRegistrationRequest:
+      type: object
+      description: Schema para o cadastro de um novo usuário.
+      required:
+        - name
+        - cpf
+        - login
+        - password
+        - roles
+        - dateInclusion
+        - dateUpdated
+      properties:
+        name:
+          type: string
+          description: Nome completo do usuário.
+          example: "Ana da Silva"
+        cpf:
+          type: string
+          description: CPF do usuário (deve ser único).
+          example: "123.456.789-00"
+        login:
+          type: string
+          description: Login de acesso do usuário (deve ser único).
+          example: "ana.silva"
+        password:
+          type: string
+          format: password
+          description: Senha de acesso do usuário.
+          minLength: 6
+          example: "senhaForte123"
+        roles:
+          type: array
+          description: Lista de perfis (roles) do usuário.
+          items:
+            type: string
+          example: ["ROLE_USER", "ROLE_READER"]
+        dateInclusion:
+          type: string
+          format: date
+          description: Data de inclusão do usuário.
+        dateUpdated:
+          type: string
+          format: date
+          description: Data de atualização do usuário.
+
+
+
+    UserResponse:
+      type: object
+      description: Schema para a resposta de dados de um usuário.
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ID único do usuário.
+        # Adicionar outros campos que você queira retornar em GETs, como nome, login, etc.
+        dateInclusion:
+          type: string
+          format: date
+          description: Data de inclusão do usuário.
+        dateUpdated:
+          type: string
+          format: date
+          description: Data de atualização do usuário.
 
     # === Schemas de Livro ===
     BookRequest:
