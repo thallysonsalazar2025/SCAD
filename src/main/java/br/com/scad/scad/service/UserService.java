@@ -1,23 +1,33 @@
 package br.com.scad.scad.service;
 
+import br.com.scad.scad.domain.UserDomain;
 import br.com.scad.scad.generated.model.UserRegistrationRequest;
-import br.com.scad.scad.domain.User;
 import br.com.scad.scad.repository.UserRepository;
 import br.com.scad.scad.service.mapper.UserMapper;
-import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-    public User createNewUserIn(UserRegistrationRequest user) {
-        return userRepository.save(userMapper.toUser(user));
+    public UserDomain createNewUserIn(UserRegistrationRequest userRequest) {
+        UserDomain user = userMapper.toUser(userRequest, passwordEncoder);
+        return userRepository.save(user);
+    }
+
+    public UserDomain findUserByLogin(String login) {
+        return userRepository.findByLogin(login);
     }
 }

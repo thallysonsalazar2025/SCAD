@@ -1,8 +1,8 @@
 package br.com.scad.scad.service.delegateApi;
 
+import br.com.scad.scad.domain.UserDomain;
 import br.com.scad.scad.generated.api.UsersApiDelegate;
 import br.com.scad.scad.generated.model.UserRegistrationRequest;
-import br.com.scad.scad.domain.User;
 import br.com.scad.scad.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class UserApiDelegateImpl implements UsersApiDelegate {
 
     @Override
     public ResponseEntity<Void> registerUser(UserRegistrationRequest userRegistrationRequest) {
-        User savedUser = userService.createNewUserIn(userRegistrationRequest);
+        UserDomain savedUser = userService.createNewUserIn(userRegistrationRequest);
         // Constrói a URI para o novo recurso criado
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest() // Pega a URL atual (ex: /api/users)
