@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class) // Habilita a auditoria de datas
-public class User {
+public class UserDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,7 +42,7 @@ public class User {
     @Column(name = "data_atualizacao", nullable = false)
     private LocalDate dateUpdated;
 
-    public User(String name, String cpf, String login, String password, List<String> roles) {
+    public UserDomain(String name, String cpf, String login, String password, List<String> roles) {
         this.name = name;
         this.cpf = cpf;
         this.login = login;
@@ -50,7 +50,7 @@ public class User {
         this.roles = roles;
     }
 
-    public User(String name, String cpf, String login, String password, LocalDate dateInclusion, List<String> roles, LocalDate dateUpdated) {
+    public UserDomain(String name, String cpf, String login, String password, LocalDate dateInclusion, List<String> roles, LocalDate dateUpdated) {
         this.name = name;
         this.cpf = cpf;
         this.login = login;
@@ -60,7 +60,7 @@ public class User {
         this.dateUpdated = dateUpdated;
     }
 
-    public User() {
+    public UserDomain() {
     }
 
     public Long getId() {

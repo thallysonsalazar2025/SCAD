@@ -5,10 +5,12 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -44,6 +46,19 @@ public class RestExceptionHandler {
         errorResponse.setMessage("An unexpected error occurred: " + ex.getMessage());
         errorResponse.setCode("InternalServerError");
         return errorResponse;
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException usernameNotFoundException){
+        return ResponseEntity.badRequest().body(usernameNotFoundException.getMessage());
+
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException acessDeniedException){
+        return ResponseEntity.badRequest().body(acessDeniedException.getMessage());
+
     }
 
 

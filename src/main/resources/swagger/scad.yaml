@@ -32,7 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AutorResponse'
+                $ref: '#/components/schemas/AuthorResponse'
         '400':
           description: Requisição inválida.
         '422':
@@ -404,6 +404,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BookResponse'
+
+    AuthorResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ID único do autor.
+          example: 101
+        name:
+          type: string
+          example: "Machado de Assis"
+        dateBirth:
+          type: string
+          format: date
+          example: "1839-06-21"
+        nacionalityCountry:
+          type: string
+          example: "Brasil"
+
 
     # === Schemas de Usuário ===
     UserRegistrationRequest:

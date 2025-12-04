@@ -2,28 +2,33 @@ package br.com.scad.scad.service.mapper;
 
 import br.com.scad.scad.domain.Author;
 import br.com.scad.scad.dto.response.AuthorSummaryResponse;
+import br.com.scad.scad.generated.model.AuthorResponse;
 import br.com.scad.scad.generated.model.AutorRequest;
 import br.com.scad.scad.generated.model.AutorResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = BookMapper.class)
+@Mapper(componentModel = "spring")
 public abstract class AuthorMapper {
+
+    @Autowired
+    protected BookMapper bookMapper;
 
     /**
      * Converte a entidade Author para o DTO AutorResponse.
-     * Usa o método qualificado 'toBookResponseWithoutAuthor' do BookMapper para evitar recursão.
+     * Usa uma expressão para chamar o BookMapper injetado, quebrando a dependência cíclica.
      */
-    @Mapping(source = "books", target = "books", qualifiedByName = "toBookResponseWithoutAuthor")
-    public abstract AutorResponse toAutorResponse(Author author);
+    public abstract AuthorResponse toAutorResponse(Author author);
+
+    public abstract AutorResponse toUpdateAutorResponse(Author author);
 
     /**
      * Converte o DTO AutorRequest para a entidade Author.
      */
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "id_user", ignore = true)
     @Mapping(target = "books", ignore = true)
     @Mapping(target = "dateSaved", ignore = true)
