@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.lang.annotation.Target;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -29,10 +30,10 @@ public abstract class AuthorMapper {
     /**
      * Converte o DTO AutorRequest para a entidade Author.
      */
-    @Mapping(target = "id_user", ignore = true)
+    @Mapping(target = "idUser", source = "idUser")
+    @Mapping(target = "dateSaved", expression = "java(java.time.LocalDate.now())")
+    @Mapping(target = "dateUpdated", expression = "java(java.time.LocalDate.now())")
     @Mapping(target = "books", ignore = true)
-    @Mapping(target = "dateSaved", ignore = true)
-    @Mapping(target = "dateUpdated", ignore = true)
     public abstract Author toAuthor(AutorRequest autorRequest);
 
     /**
@@ -44,7 +45,7 @@ public abstract class AuthorMapper {
      * Atualiza uma entidade Author existente a partir de um AutorRequest.
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "id_user", ignore = true)
+    @Mapping(target = "idUser")
     @Mapping(target = "books", ignore = true)
     @Mapping(target = "dateSaved", ignore = true)
     @Mapping(target = "dateUpdated", ignore = true)

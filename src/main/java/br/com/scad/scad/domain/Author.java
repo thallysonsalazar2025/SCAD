@@ -2,11 +2,9 @@ package br.com.scad.scad.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @NamedEntityGraph(
     name = "Author.withBooks",
@@ -21,11 +19,12 @@ public class Author {
     private String name;
     private LocalDate dateBirth;
     private String nacionalityCountry;
-
+    @Column(name = "date_saved")
     private LocalDate dateSaved;
+    @Column(name = "date_updated")
     private LocalDate dateUpdated;
-    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    private UUID id_user;
+    @Column(name = "id_user")
+    private Long idUser;
 
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
@@ -86,12 +85,12 @@ public class Author {
         return books;
     }
 
-    public UUID getId_user() {
-        return id_user;
+    public Long getIdUser() {
+        return idUser;
     }
 
-    public void setId_user(UUID id_user) {
-        this.id_user = id_user;
+    public void setIdUser(Long id_user) {
+        this.idUser = id_user;
     }
 
     public void setBooks(List<Book> books) {

@@ -381,6 +381,13 @@ components:
           type: string
           description: País de nacionalidade do autor.
           example: "Brasil"
+        idUser:
+          type: integer
+          format: int64
+          description: ID do usuário associado ao autor.
+          example: 101
+
+
 
     AutorResponse:
       type: object
