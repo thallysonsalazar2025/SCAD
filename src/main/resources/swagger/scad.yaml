@@ -386,6 +386,9 @@ components:
           format: int64
           description: ID do usuário associado ao autor.
           example: 101
+        userField:
+            $ref: '#/components/schemas/UserResponse'
+
 
 
 
@@ -411,6 +414,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BookResponse'
+
+
+
 
     AuthorResponse:
       type: object

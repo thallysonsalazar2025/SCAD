@@ -1,10 +1,12 @@
 package br.com.scad.scad.service.mapper;
 
 import br.com.scad.scad.domain.Author;
+import br.com.scad.scad.domain.UserDomain;
 import br.com.scad.scad.dto.response.AuthorSummaryResponse;
 import br.com.scad.scad.generated.model.AuthorResponse;
 import br.com.scad.scad.generated.model.AutorRequest;
 import br.com.scad.scad.generated.model.AutorResponse;
+import br.com.scad.scad.generated.model.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -30,7 +32,7 @@ public abstract class AuthorMapper {
     /**
      * Converte o DTO AutorRequest para a entidade Author.
      */
-    @Mapping(target = "idUser", source = "idUser")
+    @Mapping(target = "id_user", expression = "java(autorRequest.getUserField().getId())")
     @Mapping(target = "dateSaved", expression = "java(java.time.LocalDate.now())")
     @Mapping(target = "dateUpdated", expression = "java(java.time.LocalDate.now())")
     @Mapping(target = "books", ignore = true)
@@ -45,7 +47,7 @@ public abstract class AuthorMapper {
      * Atualiza uma entidade Author existente a partir de um AutorRequest.
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "idUser")
+    @Mapping(target = "id_user", expression = "java(author.getId_user())")
     @Mapping(target = "books", ignore = true)
     @Mapping(target = "dateSaved", ignore = true)
     @Mapping(target = "dateUpdated", ignore = true)
@@ -57,4 +59,5 @@ public abstract class AuthorMapper {
      * Não possui mapeamentos complexos, pois os nomes dos campos coincidem.
      */
     public abstract AuthorSummaryResponse toAuthorSummaryResponse(Author author);
+
 }

@@ -38,6 +38,7 @@ public class BookService {
     public Book createBook(BookRequest bookRequest) {
         validateBook.validateBook(bookRequest);
         Book bookEntity = bookMapper.toCreateBookEntity(bookRequest);
+        //todo trocar author por usuario utilizando usuario lgado
         Author author = authorRepository.findById(bookRequest.getAuthorId())
                 .orElseThrow(() -> new RuntimeException("Author not found with ID: " + bookRequest.getAuthorId()));
         bookEntity.setAuthor(author);

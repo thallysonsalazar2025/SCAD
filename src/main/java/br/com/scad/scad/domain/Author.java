@@ -2,9 +2,11 @@ package br.com.scad.scad.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @NamedEntityGraph(
     name = "Author.withBooks",
@@ -24,7 +26,7 @@ public class Author {
     @Column(name = "date_updated")
     private LocalDate dateUpdated;
     @Column(name = "id_user")
-    private Long idUser;
+    private Long id_user;
 
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
@@ -85,12 +87,12 @@ public class Author {
         return books;
     }
 
-    public Long getIdUser() {
-        return idUser;
+    public Long getId_user() {
+        return id_user;
     }
 
-    public void setIdUser(Long id_user) {
-        this.idUser = id_user;
+    public void setId_user(Long id_user) {
+        this.id_user = id_user;
     }
 
     public void setBooks(List<Book> books) {

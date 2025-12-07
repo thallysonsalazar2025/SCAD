@@ -7,6 +7,7 @@ import br.com.scad.scad.generated.model.AutorRequest;
 import br.com.scad.scad.repository.AuthorRepository;
 import br.com.scad.scad.security.SecurityService;
 import br.com.scad.scad.service.mapper.AuthorMapper;
+import br.com.scad.scad.service.mapper.UserMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -23,18 +24,20 @@ public class AuthorService {
     private final AuthorMapper authorMapper;
     private final ValidateAuthor validateAuthor;
     private final SecurityService securityService;
+    private final UserMapper userMapper;
 
-    public AuthorService(AuthorRepository authorRepository, AuthorMapper authorMapper, ValidateAuthor validateAuthor, SecurityService securityService) {
+    public AuthorService(AuthorRepository authorRepository, AuthorMapper authorMapper, ValidateAuthor validateAuthor, SecurityService securityService, UserMapper userMapper) {
         this.authorRepository = authorRepository;
         this.authorMapper = authorMapper;
         this.validateAuthor = validateAuthor;
         this.securityService = securityService;
+        this.userMapper = userMapper;
     }
 
     public Author createAuthor(AutorRequest autorRequest) {
         validateAuthor.validateAuthor(autorRequest.getName(), autorRequest.getDateBirth(), autorRequest.getNacionalityCountry());
         UserDomain userAuthen = securityService.getUserAuth();
-        autorRequest.setIdUser(userAuthen.getId());
+        autorRequest.setUserField(userMapper.toUserResponse(userAuthen));
         Author authorEntity = authorMapper.toAuthor(autorRequest);
         return authorRepository.save(authorEntity);
     }
