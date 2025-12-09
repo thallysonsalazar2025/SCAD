@@ -11,6 +11,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+        ## todo inclui config de autenticação google
+
   output:
     ansi:
       enabled: ALWAYS
