@@ -27,6 +27,10 @@ public class CustomAuthentication implements Authentication {
 
     }
 
+    public UserDomain getUserRequest() {
+        return userRequest;
+    }
+
     @Override
     public Object getCredentials() {
         return userRequest;

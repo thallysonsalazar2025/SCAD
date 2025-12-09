@@ -29,9 +29,10 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable) //todo  desabilita a config para fazer a seguraça do front onde o front é obrigado a enviar um token para o back
 //                .formLogin(configurer -> configurer.loginPage("login.html").successForwardUrl("home.html")) //todo habilida o form padrão e injeta um target para a pagina
 //                .formLogin(Customizer.withDefaults()) //todo adiciona o form padrão
-                .formLogin(configurer -> {
-                    configurer.loginPage("/login").permitAll();
-                })
+//                .formLogin(configurer -> {
+//                    configurer.loginPage("/login").permitAll();
+//                })
+                .formLogin(Customizer.withDefaults())
                 //todo estou setando as roles de cada usuario na aplicação atraves do método authorizeHttpRequests da classe: HttpSecurity
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers("/api/v1/login").permitAll();
@@ -48,9 +49,9 @@ public class SecurityConfiguration {
                     //todo setando autorização para o usuario ter uma permissão especifica utilizando o método hasAuthority
 //                    authorizeRequests.requestMatchers(HttpMethod.POST, "/books/**").hasAuthority("CADASTRO_USUARIO");
                     //todo adiciona o autenticação basic sem ela autenticação nao funciona
-                }).build();
-
-
+                })
+                .oauth2Login(Customizer.withDefaults())
+                .build();
     }
 
     //todo cria um Bean que faz a critografia da senha atraves da,
