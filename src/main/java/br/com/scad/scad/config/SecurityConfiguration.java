@@ -30,13 +30,12 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable) //todo  desabilita a config para fazer a seguraça do front onde o front é obrigado a enviar um token para o back
 //                .formLogin(configurer -> configurer.loginPage("login.html").successForwardUrl("home.html")) //todo habilida o form padrão e injeta um target para a pagina
 //                .formLogin(Customizer.withDefaults()) //todo adiciona o form padrão
-//                .formLogin(configurer -> {
-//                    configurer.loginPage("/login").permitAll();
-//                })
-                .formLogin(Customizer.withDefaults())
+                .formLogin(configurer -> {
+                    configurer.loginPage("/login").permitAll();
+                })
                 //todo estou setando as roles de cada usuario na aplicação atraves do método authorizeHttpRequests da classe: HttpSecurity
                 .authorizeHttpRequests(authorizeRequests -> {
-                    authorizeRequests.requestMatchers("/api/v1/login").permitAll();
+                    authorizeRequests.requestMatchers("/login").permitAll();
                     authorizeRequests.requestMatchers(HttpMethod.POST, "/users/**").permitAll();
                     authorizeRequests.anyRequest().authenticated();
 
@@ -51,7 +50,9 @@ public class SecurityConfiguration {
 //                    authorizeRequests.requestMatchers(HttpMethod.POST, "/books/**").hasAuthority("CADASTRO_USUARIO");
                     //todo adiciona o autenticação basic sem ela autenticação nao funciona
                 })
-                .oauth2Login(ouath2 -> ouath2.successHandler(successHandler))
+                .oauth2Login(ouath2 -> ouath2
+                        .loginPage("/login")
+                        .successHandler(successHandler))
                 .build();
     }
 
