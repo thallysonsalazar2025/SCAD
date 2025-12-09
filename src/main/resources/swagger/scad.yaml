@@ -450,6 +450,7 @@ components:
         - roles
         - dateInclusion
         - dateUpdated
+        - email
       properties:
         name:
           type: string
@@ -483,6 +484,9 @@ components:
           type: string
           format: date
           description: Data de atualização do usuário.
+        email:
+          type: string
+          description: Email of user
 
 
 
@@ -503,6 +507,10 @@ components:
           type: string
           format: date
           description: Data de atualização do usuário.
+        email:
+          type: string
+          description: Email of user
+
 
     # === Schemas de Livro ===
     BookRequest:

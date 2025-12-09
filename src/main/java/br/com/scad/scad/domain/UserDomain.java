@@ -1,6 +1,8 @@
 package br.com.scad.scad.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -42,15 +44,29 @@ public class UserDomain {
     @Column(name = "data_atualizacao", nullable = false)
     private LocalDate dateUpdated;
 
-    public UserDomain(String name, String cpf, String login, String password, List<String> roles) {
+    @NotNull
+    @Email(message = "E-mail inválido")
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public UserDomain(String name, String cpf, String login, String password, List<String> roles,String email) {
         this.name = name;
         this.cpf = cpf;
         this.login = login;
         this.password = password;
         this.roles = roles;
+        this.email = email;
     }
 
-    public UserDomain(String name, String cpf, String login, String password, LocalDate dateInclusion, List<String> roles, LocalDate dateUpdated) {
+    public UserDomain(String name, String cpf, String login, String password, LocalDate dateInclusion, List<String> roles, LocalDate dateUpdated, String email) {
         this.name = name;
         this.cpf = cpf;
         this.login = login;
@@ -58,6 +74,7 @@ public class UserDomain {
         this.dateInclusion = dateInclusion;
         this.roles = roles;
         this.dateUpdated = dateUpdated;
+        this.email = email;
     }
 
     public UserDomain() {
