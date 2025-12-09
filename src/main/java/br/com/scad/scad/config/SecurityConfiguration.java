@@ -1,6 +1,7 @@
 package br.com.scad.scad.config;
 
 import br.com.scad.scad.security.CustomUserDetailsService;
+import br.com.scad.scad.security.LoginSocialSuccessHandler;
 import br.com.scad.scad.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,7 @@ public class SecurityConfiguration {
 
     // todo criaçao de um bean do tipo SecurityFilterChain que injeta o HttpSecurity  e cria um form padrão e um basic
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, LoginSocialSuccessHandler successHandler) throws Exception {
         return http
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable) //todo  desabilita a config para fazer a seguraça do front onde o front é obrigado a enviar um token para o back
@@ -50,7 +51,7 @@ public class SecurityConfiguration {
 //                    authorizeRequests.requestMatchers(HttpMethod.POST, "/books/**").hasAuthority("CADASTRO_USUARIO");
                     //todo adiciona o autenticação basic sem ela autenticação nao funciona
                 })
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(ouath2 -> ouath2.successHandler(successHandler))
                 .build();
     }
 

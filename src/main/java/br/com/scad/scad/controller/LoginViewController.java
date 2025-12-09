@@ -19,6 +19,6 @@ public class LoginViewController {
         if(authentication instanceof CustomAuthentication customAuthentication){
             System.out.println(customAuthentication.getUserRequest());
         }
-        return "home" + authentication.getName();
+        return "Ola " + authentication.getName();
     }
 }

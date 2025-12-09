@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<UserDomain, Long> {
     UserDomain findByLogin(@NotNull String login);
+
+    UserDomain findByEmail(String email);
 }

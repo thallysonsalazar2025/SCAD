@@ -31,4 +31,7 @@ public class UserService {
     public UserDomain findUserByLogin(String login) {
         return userRepository.findByLogin(login);
     }
+    public UserDomain findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }
