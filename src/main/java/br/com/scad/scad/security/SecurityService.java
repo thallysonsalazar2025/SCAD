@@ -1,6 +1,7 @@
 package br.com.scad.scad.security;
 
 import br.com.scad.scad.domain.UserDomain;
+import br.com.scad.scad.dto.response.UserRegistrationRespose;
 import br.com.scad.scad.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,8 +21,8 @@ public class SecurityService {
 
     public UserDomain getUserAuth(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String login =  userDetails.getUsername();
+        UserDomain userDetails = (UserDomain) authentication.getPrincipal();
+        String login =  userDetails.getLogin();
         return userService.findUserByLogin(login);
     }
 }

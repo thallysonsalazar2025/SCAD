@@ -1,6 +1,7 @@
 package br.com.scad.scad.repository;
 
 import br.com.scad.scad.domain.UserDomain;
+import br.com.scad.scad.dto.response.UserRegistrationRespose;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

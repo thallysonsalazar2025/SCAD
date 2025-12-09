@@ -17,4 +17,28 @@ public record UserRegistrationRequest(
         String senha,
         @NotEmpty(message = "O usuário deve ter pelo menos uma role.")
         List<String> roles) {
+        @Override
+        public String nome() {
+                return nome;
+        }
+
+        @Override
+        public String cpf() {
+                return cpf;
+        }
+
+        @Override
+        public String login() {
+                return login;
+        }
+
+        @Override
+        public String senha() {
+                return senha;
+        }
+
+        @Override
+        public List<String> roles() {
+                return roles;
+        }
 }

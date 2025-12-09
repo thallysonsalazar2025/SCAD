@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -50,16 +51,22 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException usernameNotFoundException){
-        return ResponseEntity.badRequest().body(usernameNotFoundException.getMessage());
+    public ErrorResponse handleUsernameNotFoundException(UsernameNotFoundException usernameNotFoundException){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(usernameNotFoundException.getMessage());
+        errorResponse.setCode("UsernameNotFoundException");
+        return errorResponse;
 
     }
-    @ExceptionHandler(AccessDeniedException.class)
+
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException acessDeniedException){
-        return ResponseEntity.badRequest().body(acessDeniedException.getMessage());
+    public ErrorResponse handleAccessDeniedException(AuthorizationDeniedException acessDeniedException){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(acessDeniedException.getMessage());
+        errorResponse.setCode("AccessDeniedException");
+        return errorResponse;
 
     }
-
-
 }

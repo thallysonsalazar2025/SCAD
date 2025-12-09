@@ -60,7 +60,7 @@ public class SecurityConfiguration {
     }
 
     //todo retorna a configuração da CustomUserDetailsService onde eu crio a configuração de acesso utilizando
-    @Bean
+//    @Bean
     public UserDetailsService userDetailsService(UserService userService) {
         //todo Cria um bean para criar usuarios em mémoria e injeta o PasswordEncoder para capturar o password e criptografar a senha
         // repositorio de usuarios em memoria!***
@@ -80,4 +80,6 @@ public class SecurityConfiguration {
 
         return new CustomUserDetailsService(userService);
     }
+
+
 }

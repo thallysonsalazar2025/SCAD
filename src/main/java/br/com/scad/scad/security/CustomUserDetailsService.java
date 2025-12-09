@@ -1,6 +1,7 @@
 package br.com.scad.scad.security;
 
 import br.com.scad.scad.domain.UserDomain;
+import br.com.scad.scad.dto.response.UserRegistrationRespose;
 import br.com.scad.scad.service.UserService;
 
 import org.springframework.security.core.userdetails.User;
@@ -23,9 +24,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         UserDomain userAplication = userService.findUserByLogin(login);
-
+        if (userAplication == null){
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
         return User.builder()
-                .username(userAplication.getLogin())
+                .username(userAplication.getName())
                 .password(userAplication.getPassword())
                 .roles(userAplication.getRoles().toArray(new String[0]))
                 .build();

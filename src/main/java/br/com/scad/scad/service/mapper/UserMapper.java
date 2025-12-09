@@ -1,7 +1,8 @@
 package br.com.scad.scad.service.mapper;
 import br.com.scad.scad.domain.UserDomain;
-import br.com.scad.scad.generated.model.UserRegistrationRequest;
 
+import br.com.scad.scad.dto.response.UserRegistrationRespose;
+import br.com.scad.scad.generated.model.UserRegistrationRequest;
 import br.com.scad.scad.generated.model.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
