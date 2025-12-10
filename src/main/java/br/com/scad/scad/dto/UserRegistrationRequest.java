@@ -17,6 +17,8 @@ public record UserRegistrationRequest(
         String senha,
         @NotEmpty(message = "O usuário deve ter pelo menos uma role.")
         List<String> roles) {
+
+
         @Override
         public String nome() {
                 return nome;

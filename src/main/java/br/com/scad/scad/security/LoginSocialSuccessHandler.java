@@ -1,7 +1,8 @@
 package br.com.scad.scad.security;
 
 import br.com.scad.scad.domain.UserDomain;
-import br.com.scad.scad.dto.UserRegistrationRequest;
+
+import br.com.scad.scad.generated.model.UserRegistrationRequest;
 import br.com.scad.scad.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,10 +15,12 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.Collections;
 
 @Component
 public class LoginSocialSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+    public static final String PASSWORD_STANDARD = "123";
     private final UserService userService;
 
     public LoginSocialSuccessHandler(UserService userService) {
@@ -32,11 +35,16 @@ public class LoginSocialSuccessHandler extends SavedRequestAwareAuthenticationSu
         //todo classe responsável por recuperar o usuario autenticado no google
         OAuth2AuthenticationToken auth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
         OAuth2User oAuth2User = auth2AuthenticationToken.getPrincipal();
+
         //todo recupero o atributo email através do authentication
         String email = oAuth2User.getAttribute("email");
+        String nameUser = oAuth2User.getAttribute("name");
 
         //todo busco o usuario com o email autenticadono google
         UserDomain user = userService.findUserByEmail(email);
+        if(user == null){
+            user = createNewUserDomain(email, nameUser);
+        }
 
 
         //todo passo para o meu CustomAuthentication o usuario autenticado no google e modifico
@@ -51,5 +59,19 @@ public class LoginSocialSuccessHandler extends SavedRequestAwareAuthenticationSu
         // todo e por fim eu passo para frente chamando outra pagina chamando o método onAuthenticationSuccess
         super.onAuthenticationSuccess(request, response, authentication);
 
+    }
+
+    private UserDomain createNewUserDomain(String email, String nameUser) {
+        UserRegistrationRequest userCad = new UserRegistrationRequest();
+        userCad.setEmail(email);
+        userCad.setLogin(userService.getLogionByMail(email));
+        userCad.setDateInclusion(LocalDate.now());
+        userCad.setDateUpdated(LocalDate.now());
+        userCad.setPassword(PASSWORD_STANDARD);
+        userCad.setName(nameUser);
+        //todo futuramente integrar uma api para consultar o usario pelo nome data de nascimento e retornar o cpf do cliente
+        userCad.setCpf(userService.getCpfByApiClientGov(nameUser));
+        userCad.setRoles(Collections.singletonList("USER"));
+        return userService.createNewUserIn(userCad);
     }
 }
