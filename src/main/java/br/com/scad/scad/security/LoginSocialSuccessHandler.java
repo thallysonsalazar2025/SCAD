@@ -47,7 +47,7 @@ public class LoginSocialSuccessHandler extends SavedRequestAwareAuthenticationSu
         }
 
 
-        //todo passo para o meu CustomAuthentication o usuario autenticado no google e modifico
+        //todo passo para o meu CustomAuthentication o ^?usuario autenticado no google e modifico
         // a minha authentication para ser uma nova CustomAuthentication
         authentication  = new CustomAuthentication(user);
 
