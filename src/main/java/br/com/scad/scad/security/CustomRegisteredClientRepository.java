@@ -2,23 +2,34 @@ package br.com.scad.scad.security;
 
 import br.com.scad.scad.dto.ClientRequest;
 import br.com.scad.scad.service.ClientService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CustomRegisteredClientRepository implements RegisteredClientRepository {
     private final ClientService clientService;
+    private final TokenSettings tokenSettings;
+    private final ClientSettings clientSettingsConfig;
+    private final PasswordEncoder passwordEncoder;
 
-    public CustomRegisteredClientRepository(ClientService clientService) {
+
+    public CustomRegisteredClientRepository(ClientService clientService, TokenSettings tokenSettings, ClientSettings clientSettingsConfig, PasswordEncoder passwordEncoder) {
         this.clientService = clientService;
+        this.tokenSettings = tokenSettings;
+        this.clientSettingsConfig = clientSettingsConfig;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     @Override
-    public void save(RegisteredClient registeredClient) {}
+    public void save(RegisteredClient registeredClient) {
+    }
 
     @Override
     public RegisteredClient findById(String id) {
@@ -31,21 +42,25 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
 
         // todo vai na base buscar um client registrado se não encontrar retorna null se encontrar ele
         var client = clientService.getClient(request);
-        if (client == null){
+        if (client == null) {
             return null;
         }
 
-        //todo seta o  RegisteredClient que envia para o Authorization Server o client registrado
         return RegisteredClient
+                //todo Inclui valores de parametros do client registrado
                 .withId(client.id().toString())
                 .clientId(client.clientId())
-                .clientSecret(client.clientSecret())
+                .clientSecret(passwordEncoder.encode(client.clientSecret()))
                 .redirectUri(client.redirectUri())
                 .scope(client.scope())
+                //todo Inclui configuração no client referente ao tipo de autenticação do client
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-//                .tokenSettings()
+                //todo injeta a configuração da classe AuthorizationServerConfiguration token dura 60 minutos
+                .tokenSettings(tokenSettings)
+                //todo injeta a configuração da classe AuthorizationServerConfiguration desabilita tela consentimento do google
+                .clientSettings(clientSettingsConfig)
                 .build();
     }
 }

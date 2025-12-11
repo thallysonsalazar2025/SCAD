@@ -1,7 +1,6 @@
 package br.com.scad.scad.security;
 
 import br.com.scad.scad.domain.UserDomain;
-import br.com.scad.scad.dto.response.UserRegistrationRespose;
 import br.com.scad.scad.service.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
