@@ -158,7 +158,22 @@ public class AuthorizationServerConfiguration {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:8080/api/v1")
+                .issuer("http://localhost:8080/api/v1") //todo
+                //todo obtem a chave publica para verificar a assinatura do token
+                .jwkSetEndpoint("/oauth2/jwks")
+                //todo obtem o token
+                .tokenEndpoint("/oauth2/token")
+                //todo para consultar o status do endpoint
+                .tokenIntrospectionEndpoint("/oauth2/introspect")
+                //todo para revogar o token
+                .tokenRevocationEndpoint("/oauth2/revoke")
+                //todo authorization endpoint
+                .authorizationEndpoint("/oauth2/authorized")
+                //todo informações usuario OPEN ID CONNECT
+                .oidcUserInfoEndpoint("/oauth2/userinfo")
+                //todo logout
+                .oidcLogoutEndpoint("/oauth2/logout")
                 .build();
     }
+
 }
