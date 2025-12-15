@@ -17,12 +17,19 @@ public class LoginViewController {
     @GetMapping("/")
     @ResponseBody
     public String homePage(Authentication authentication) {
+        if (authentication == null) {
+            System.out.println("Usuário não autenticado" + authentication);
+        }
         return "<h1>Bem-vindo, " + authentication.getName() + "!</h1><p>Você está autenticado.</p>";
     }
 
     @GetMapping("/authorized")
     @ResponseBody
-    public String googleCallback(@RequestParam("code") String code) {
-        return "<h1>Callback do Google</h1><p>Seu código de autorização é:</p><pre>" + code + "</pre>";
+    public String homePage2( @RequestParam("code") String code) {
+        if (code == null) {
+            System.out.println("kkkkkkkkkkkkkkkkk" + code);
+        }
+        return "<h1>Bem-vindo, " + code + "!</h1><p>Você está autenticado.</p>";
     }
+
 }
