@@ -26,9 +26,6 @@ public class LoginViewController {
     @GetMapping("/authorized")
     @ResponseBody
     public String homePage2( @RequestParam("code") String code) {
-        if (code == null) {
-            System.out.println("kkkkkkkkkkkkkkkkk" + code);
-        }
         return "<h1>Bem-vindo, " + code + "!</h1><p>Você está autenticado.</p>";
     }
 
