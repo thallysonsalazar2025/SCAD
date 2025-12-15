@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller //utilizado para pagina web
 public class LoginViewController {
+
     @GetMapping("/login")
-    public String paginalogin(){
+    public String login() {
+        // Retorna a view 'login' -> src/main/resources/templates/login.html (Thymeleaf)
         return "login";
     }
 

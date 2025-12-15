@@ -1,5 +1,6 @@
 package br.com.scad.scad.domain;
 
+import br.com.scad.scad.dto.ClientResponse;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -33,6 +34,8 @@ public class Client {
         this.redirectUri = redirectUri;
         this.scope = scope;
     }
+
+
 
     public UUID getId() {
         return id;

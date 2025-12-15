@@ -1,101 +1,156 @@
 package br.com.scad.scad.config;
 
+
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import org.junit.jupiter.api.Order;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
-import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
-import java.util.Random;
 import java.util.UUID;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
-@EnableWebSecurity
 public class AuthorizationServerConfiguration {
 
+    // Matcher local para os endpoints do Authorization Server (reutilizável)
+    // Não inclui "/oauth2/authorization/**" para não bloquear OAuth2 Client (ex: Google login)
+    private static RequestMatcher authorizationServerEndpointsMatcher() {
+        final String[] endpoints = {
+                "/.well-known",
+                "/.well-known/openid-configuration",
+                "/oauth2/authorize",
+                "/oauth2/token",
+                "/oauth2/introspect",
+                "/oauth2/revoke",
+                "/oauth2/jwks",
+                "/userinfo"
+        };
+
+        return request -> {
+            String uri = request.getRequestURI();
+            for (String e : endpoints) {
+                if (uri.contains(e)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+
+    // 1. CADEIA DE FILTROS PARA OS ENDPOINTS DO AUTHORIZATION SERVER
     @Bean
-    @Order(1) //todo qualifica esse bean para ser priorizado na hora de criar e gerenciar pelo spring Security
+    @Order(1) // Define esta cadeia como a de maior prioridade
+    @SuppressWarnings("deprecation")
     public SecurityFilterChain serverSecurityFilterChain(HttpSecurity http) throws Exception {
-        //todo cria a configuração de Oauth2 do ResourceServer
-        http.authorizeHttpRequests(
-                        authorizeRequests -> authorizeRequests.anyRequest().authenticated()
-                ) //todo todas as requisições precisam estar autenticadas e essa linha faz isso
-                .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(withDefaults()))
-                .formLogin(configurer -> configurer.loginPage("/login"))
-                .oauth2Login(withDefaults()
-                ); // todo adiciona o suporte ao login via oauth2 via open id connect (oidc)
+        // Garantir que esta cadeia só trate os endpoints do Authorization Server
+        http.securityMatcher(authorizationServerEndpointsMatcher());
+
+        // Aplica a configuração padrão do Authorization Server (para endpoints específicos)
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+
+        // Habilita o suporte ao OpenID Connect 1.0
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                .oidc(Customizer.withDefaults());
+
+        // Configura o redirecionamento para a página de login se o usuário não estiver autenticado
+        http.exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+        );
 
         return http.build();
     }
 
-    //todo cria um Bean que faz a critografia da senha atraves da,
-    // interface PasswordEncoder e retorna um obj do tipo BCryptPasswordEncoder
+    // 2. CADEIA DE FILTROS PADRÃO PARA A APLICAÇÃO (API E LOGIN)
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
+    @Order(2)
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+
+        // Garantir que esta cadeia NÃO coincida com os endpoints do Authorization Server
+        http.securityMatcher(new NegatedRequestMatcher(authorizationServerEndpointsMatcher()));
+
+        // Configurações padrão para a aplicação (login, recursos, resource server)
+        http.exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/login", "/error", "/css/**", "/js/**", "/oauth2/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2Login ->
+                        oauth2Login.loginPage("/login")
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+
+        return http.build();
     }
 
+    /**
+     * Define as configurações para os tokens gerados (ex: tempo de vida).
+     */
     @Bean
     public TokenSettings tokenSettings() {
         return TokenSettings.builder()
-                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
-                .accessTokenTimeToLive(Duration.ofMinutes(60))
+                .accessTokenTimeToLive(Duration.ofMinutes(60)) // Access token válido por 60 minutos
                 .build();
     }
 
+    /**
+     * Define as configurações para os clients registrados (ex: tela de consentimento).
+     */
     @Bean
     public ClientSettings clientSettings() {
         return ClientSettings.builder()
-                .requireAuthorizationConsent(false)
+                .requireAuthorizationConsent(false) // Desabilita a tela de consentimento para o client
                 .build();
     }
 
-    //todo Gera o token Jwk- json web key
+    // 3. BEANS ESSENCIAIS PARA O AUTHORIZATION SERVER
     @Bean
-    public JWKSource<SecurityContext> jwkSource() throws Exception {
-        RSAKey rsaKey = generateRsaKey();
-        JWKSet jwkSet = new JWKSet(rsaKey);
-        return new ImmutableJWKSet<>(jwkSet);
-    }
+    public JWKSource<SecurityContext> jwkSource() {
+        KeyPair keyPair = generateRsaKey();
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
 
-    //todo gera uma chave do tipo RSA composta por chave publica e  privada
-    private RSAKey generateRsaKey() throws Exception {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        RSAPublicKey rsaPublicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) keyPair.getPrivate();
-        return new RSAKey.Builder(rsaPublicKey)
-                .privateKey(rsaPrivateKey)
+        RSAKey rsaKey = new RSAKey.Builder(publicKey)
+                .privateKey(privateKey)
                 .keyID(UUID.randomUUID().toString())
                 .build();
+
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
     }
 
-    @Bean //todo  o método faz a decodificação dos tokens jwt implementando a classe OAuth2AuthorizationServerConfiguration
-    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+    private static KeyPair generateRsaKey() {
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048);
+            return keyPairGenerator.generateKeyPair();
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    @Bean
+    public AuthorizationServerSettings authorizationServerSettings() {
+        return AuthorizationServerSettings.builder()
+                .issuer("http://localhost:8080/api/v1")
+                .build();
     }
 }

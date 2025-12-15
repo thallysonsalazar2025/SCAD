@@ -22,10 +22,4 @@ public class ClientApiContrller {
     public void createClient(@RequestBody ClientRequest client){
          service.saveClient(client);
     }
-
-    @GetMapping("/search")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ClientResponse getClient(@RequestBody ClientRequest client){
-        return service.getClient(client);
-    }
 }

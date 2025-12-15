@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class ClientService {
@@ -27,9 +29,13 @@ public class ClientService {
         repository.save(mapper.toEntity(client,passwordEncoder));
     }
 
-    public ClientResponse getClient(ClientRequest client){
-
-        Client clientRequest = mapper.toEntity(client, passwordEncoder);
-        return repository.findByClientId(clientRequest.getId().toString()).orElse(null);
+    /**
+     * Finds a client by its public client ID and maps it to a response DTO.
+     * @param clientId The public ID of the client to find.
+     * @return An Optional containing the ClientResponse if found, otherwise an empty Optional.
+     */
+    @Transactional(readOnly = true)
+    public Optional<ClientResponse> findByClientId(String clientId) {
+        return repository.findByClientId(clientId).map(mapper::toResponse);
     }
 }

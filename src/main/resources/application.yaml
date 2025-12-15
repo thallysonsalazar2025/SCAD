@@ -18,6 +18,12 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: openid, profile, email # Escopos para obter informações básicas do usuário
+      resourceserver:
+        jwt:
+          # Diz ao Resource Server (que protege /api/**) onde encontrar as chaves públicas
+          # para validar os tokens JWT. A URL DEVE incluir o context-path.
+          jwk-set-uri: http://localhost:8080/api/v1/oauth2/jwks
   output:
     ansi:
       enabled: ALWAYS

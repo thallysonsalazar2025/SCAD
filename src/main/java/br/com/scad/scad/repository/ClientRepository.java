@@ -8,5 +8,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ClientRepository extends JpaRepository<Client, UUID> {
-    Optional<ClientResponse> findByClientId(String clientId);
+    Optional<Client> findByClientId(String clientId);
 }
