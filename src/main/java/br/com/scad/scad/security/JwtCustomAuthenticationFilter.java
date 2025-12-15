@@ -28,18 +28,25 @@ public class JwtCustomAuthenticationFilter extends OncePerRequestFilter {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (goToConvert(authentication)) {
+            //todo recupera o login
             String userAuth = authentication.getName();
+            //todo recupera o usuario
             UserDomain userDomain = userService.findUserByLogin(userAuth);
             if (userDomain == null) {
+                //todo instancia uma CustomAuthentication passando o usuario
                 authentication = new CustomAuthentication(userDomain);
+                //todo seta a nova customAutentication criado acima no contexto de segurança
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
+        //todo passa para frente a requisição
         filterChain.doFilter(request, response);
 
     }
 
     private Boolean goToConvert(Authentication authentication) {
+        //todo valida e converte o Authentication em um CustomAuthentication
+        // se a instancia do token for do tipo JwtAuthenticationToken
         return authentication != null && authentication instanceof JwtAuthenticationToken;
     }
 }
