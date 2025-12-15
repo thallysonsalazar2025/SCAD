@@ -112,7 +112,10 @@ public class AuthorizationServerConfiguration {
     @Bean
     public TokenSettings tokenSettings() {
         return TokenSettings.builder()
+                //todo aces_token é o tokn utilizado nas requisições
                 .accessTokenTimeToLive(Duration.ofMinutes(60)) // Access token válido por 60 minutos
+                //todo token para renovar o acess o tempo dele é maior que o acess
+                .refreshTokenTimeToLive(Duration.ofDays(90)) // a seção é extendida por mais 90 minutos
                 .build();
     }
 
