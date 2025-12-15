@@ -93,6 +93,11 @@ public class AuthorizationServerConfiguration {
                         .requestMatchers("/login", "/error", "/css/**", "/js/**", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                // Habilita o login com formulário customizado
+                .formLogin(formLogin ->
+                        formLogin.loginPage("/login")
+                )
+                // Habilita o login com provedores externos (Google)
                 .oauth2Login(oauth2Login ->
                         oauth2Login.loginPage("/login")
                 )
