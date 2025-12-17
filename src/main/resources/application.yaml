@@ -31,3 +31,11 @@ server:
   port: 8080
   servlet:
     context-path: /api/v1
+  springdoc:
+    api-docs:
+      path: /api/v1/v3/api-docs
+    swagger-ui:
+      path: /api/v1/swagger-ui.html
+    paths-to-exclude:
+      - /oauth2/**
+      - /.well-known/**

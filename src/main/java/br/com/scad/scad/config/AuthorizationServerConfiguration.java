@@ -22,7 +22,9 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.security.KeyPair;
@@ -47,6 +49,7 @@ public class AuthorizationServerConfiguration {
                 "/oauth2/token",
                 "/oauth2/introspect",
                 "/oauth2/revoke",
+                "/.well-known/**",
                 "/oauth2/jwks",
                 "/userinfo"
         };
@@ -54,7 +57,7 @@ public class AuthorizationServerConfiguration {
         return request -> {
             String uri = request.getRequestURI();
             for (String e : endpoints) {
-                if (uri.contains(e)) {
+                if (uri.equals(e) || uri.startsWith(e + "/")) {
                     return true;
                 }
             }
@@ -88,30 +91,42 @@ public class AuthorizationServerConfiguration {
     // 2. CADEIA DE FILTROS PADRÃO PARA A APLICAÇÃO (API E LOGIN)
     @Bean
     @Order(2)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
 
-        // Garantir que esta cadeia NÃO coincida com os endpoints do Authorization Server
-        http.securityMatcher(new NegatedRequestMatcher(authorizationServerEndpointsMatcher()));
-
-        // Configurações padrão para a aplicação (login, recursos, resource server)
-        http.exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
+        http
+                .securityMatcher(
+                        "/login",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger/scad.yaml",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**"
+                )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/error", "/css/**", "/js/**", "/oauth2/**").permitAll()
+                        .anyRequest().permitAll()
+                )
+                .formLogin(form -> form.loginPage("/login"))
+                .oauth2Login(oauth2 -> oauth2.loginPage("/login"));
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(3)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                .securityMatcher(new NegatedRequestMatcher(authorizationServerEndpointsMatcher()))
+                .authorizeHttpRequests(auth -> auth
                         .anyRequest().authenticated()
-                )
-                // Habilita o login com formulário customizado
-                .formLogin(formLogin ->
-                        formLogin.loginPage("/login")
-                )
-                // Habilita o login com provedores externos (Google)
-                .oauth2Login(oauth2Login ->
-                        oauth2Login.loginPage("/login")
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
+
 
     /**
      * Define as configurações para os tokens gerados (ex: tempo de vida).
@@ -165,7 +180,7 @@ public class AuthorizationServerConfiguration {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:8080/api/v1") //todo
+                .issuer("http://localhost:8080") //todo
                 //todo obtem a chave publica para verificar a assinatura do token
                 .jwkSetEndpoint("/oauth2/jwks")
                 //todo obtem o token
@@ -206,6 +221,7 @@ public class AuthorizationServerConfiguration {
             }
         };
     }
+
 
 
 }

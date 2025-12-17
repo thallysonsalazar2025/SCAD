@@ -128,8 +128,8 @@ O fluxo principal implementado é o `Authorization Code`, que é o mais seguro e
     ```
 
 6.  **Acesse a aplicação:**
-    O servidor estará disponível em `http://localhost:8080/api/v1`. A documentação da API (Swagger UI) pode ser acessada em `http://localhost:8080/api/v1/swagger-ui.html`.
-
+    O servidor estará disponível em `http://localhost:8080/api/v1`. A documentação da API (Swagger UI) pode ser acessada em `http://localhost:8080/api/v1/swagger-ui.html`
+    
 ---
 
 ## 💡 Endpoints Principais

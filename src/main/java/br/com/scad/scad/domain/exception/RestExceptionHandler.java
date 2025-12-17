@@ -5,7 +5,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -60,9 +59,9 @@ public class RestExceptionHandler {
     }
 
 
-    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleAccessDeniedException(AuthorizationDeniedException acessDeniedException){
+    public ErrorResponse handleAccessDeniedException(AccessDeniedException acessDeniedException){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(acessDeniedException.getMessage());
         errorResponse.setCode("AccessDeniedException");
