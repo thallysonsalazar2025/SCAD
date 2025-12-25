@@ -14,14 +14,14 @@ public class LoginViewController {
         // Retorna a view 'login' -> src/main/resources/templates/login.html (Thymeleaf)
         return "login";
     }
-    @GetMapping("/")
-    @ResponseBody
-    public String homePage(Authentication authentication) {
-        if (authentication == null) {
-            System.out.println("Usuário não autenticado" + authentication);
-        }
-        return "<h1>Bem-vindo, " + authentication.getName() + "!</h1><p>Você está autenticado.</p>";
-    }
+//    @GetMapping("/")
+//    @ResponseBody
+//    public String homePage(Authentication authentication) {
+//        if (authentication == null) {
+//            System.out.println("Usuário não autenticado" + authentication);
+//        }
+//        return "<h1>Bem-vindo, " + authentication.getName() + "!</h1><p>Você está autenticado.</p>";
+//    }
 
     @GetMapping("/authorized")
     @ResponseBody

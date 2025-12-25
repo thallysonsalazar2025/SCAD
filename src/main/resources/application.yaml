@@ -23,6 +23,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+
   output:
     ansi:
       enabled: ALWAYS
@@ -31,11 +32,4 @@ server:
   port: 8080
   servlet:
     context-path: /api/v1
-  springdoc:
-    api-docs:
-      path: /api/v1/v3/api-docs
-    swagger-ui:
-      path: /api/v1/swagger-ui.html
-    paths-to-exclude:
-      - /oauth2/**
-      - /.well-known/**
+

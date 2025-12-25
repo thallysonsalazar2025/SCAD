@@ -27,10 +27,6 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-    /**
-     * Define o bean para o codificador de senhas.
-     * Usamos o BCrypt, que é o padrão recomendado pelo Spring Security.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

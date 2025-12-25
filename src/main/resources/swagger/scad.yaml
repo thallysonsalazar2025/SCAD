@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Biblioteca Digital API
-  description: API para o cadastro de autores e livros na Biblioteca Digital.
+  description: API para o cadastro de autores, livros e usuários na Biblioteca Digital.
   version: 1.0.0
 servers:
   - url: http://localhost:8080
