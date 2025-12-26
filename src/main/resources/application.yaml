@@ -1,4 +1,6 @@
 logging:
+  file:
+    name: application.log
   level:
     org.springframework.security: DEBUG
     org.springframework.web.client.RestTemplate: DEBUG
