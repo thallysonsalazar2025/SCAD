@@ -29,6 +29,12 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+management:
+  port: 9090
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 server:
   port: 8080
