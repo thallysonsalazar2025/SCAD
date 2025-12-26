@@ -7,6 +7,7 @@ import br.com.scad.scad.generated.model.BookRequest;
 import br.com.scad.scad.repository.AuthorRepository;
 import br.com.scad.scad.repository.BookRepository;
 import br.com.scad.scad.service.mapper.BookMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import static br.com.scad.scad.repository.specs.BookSpecs.requestPageableAndVali
 
 @Service
 @Transactional
+@Slf4j
 public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
@@ -36,12 +38,17 @@ public class BookService {
     }
 
     public Book createBook(BookRequest bookRequest) {
+        log.info("Request for save a new Book: {}"+ bookRequest);
         validateBook.validateBook(bookRequest);
         Book bookEntity = bookMapper.toCreateBookEntity(bookRequest);
         //todo trocar author por usuario utilizando usuario lgado
         Author author = authorRepository.findById(bookRequest.getAuthorId())
                 .orElseThrow(() -> new RuntimeException("Author not found with ID: " + bookRequest.getAuthorId()));
+
+        log.info("The author is: " + author.getName() + " with id: "+   author.getId());
         bookEntity.setAuthor(author);
+
+        log.info("Sucess save the book: "+ bookEntity.getTitle());
         return bookRepository.save(bookEntity);
     }
 

@@ -9,6 +9,7 @@ import br.com.scad.scad.repository.AuthorRepository;
 import br.com.scad.scad.security.SecurityService;
 import br.com.scad.scad.service.mapper.AuthorMapper;
 import br.com.scad.scad.service.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
@@ -36,10 +38,12 @@ public class AuthorService {
     }
 
     public Author createAuthor(AutorRequest autorRequest) {
+        log.info("Save a new Author"+ autorRequest);
         validateAuthor.validateAuthor(autorRequest.getName(), autorRequest.getDateBirth(), autorRequest.getNacionalityCountry());
         UserDomain userAuthen = securityService.getUserAuth();
         autorRequest.setUserField(userMapper.toUserResponse(userAuthen));
         Author authorEntity = authorMapper.toAuthor(autorRequest);
+        log.info("Save a new Author"+ authorEntity);
         return authorRepository.save(authorEntity);
     }
 
@@ -55,7 +59,7 @@ public class AuthorService {
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
 
         Example<Author> exampleAuthor = Example.of(authorRequest, exampleMatcher);
-
+        log.info("returned a author: "+ exampleAuthor);
         return authorRepository.findAll(exampleAuthor);
     }
 
@@ -69,6 +73,7 @@ public class AuthorService {
     }
 
     public boolean deleteAuthor(Long id) {
+        log.info("Delete Author"+ id);
         return authorRepository.findById(id)
                 .map(author -> {
                     validateAuthor.validateAuthorCanBeDeleted(author);
@@ -80,6 +85,7 @@ public class AuthorService {
 
     @Transactional(readOnly = true)
     public Optional<Author> findAuthorById(Long id) {
+        log.info("Find Author By Id"+ id);
         return authorRepository.findById(id);
     }
 }
