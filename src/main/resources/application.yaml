@@ -1,13 +1,9 @@
-logging:
-  file:
-    name: application.log
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.web.client.RestTemplate: DEBUG
-
 spring:
   application:
     name: Produtos Api
+#  profiles:
+#    active:
+#      - homologacao
   datasource:
     url: jdbc:mysql://localhost:3306/cadastro_produtos?useTimezone=true&serverTimezone=UTC
     username: root
@@ -35,9 +31,59 @@ management:
     web:
       exposure:
         include: "*"
+logging:
+  file:
+    name: application.log
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web.client.RestTemplate: DEBUG
 
 server:
   port: 8080
   servlet:
     context-path: /api/v1
+
+## Perfil de produção
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+## Perfil de homologacao
+---
+spring:
+  config:
+    activate:
+      on-profile: homologacao
+
+  jpa:
+    show-sql: false
+    hibernate:
+      # 'update' é útil para desenvolvimento, mas NUNCA deve ser usado em produção.
+      ddl-auto: update
+
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            # Segredos e IDs de cliente NUNCA devem ser hardcoded.
+            # Use as mesmas variáveis de ambiente do seu arquivo principal.
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+  datasource:
+    url: ${URL_DATABASE}
+    username: ${USER_DATABASE}
+    # A senha do banco de dados nunca deve ser hardcoded. Use variáveis de ambiente.
+    password: ${DB_PASSWORD}
+
+
+
 
