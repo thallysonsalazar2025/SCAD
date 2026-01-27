@@ -94,6 +94,7 @@ public class AuthorizationServerConfiguration {
         http
                 .securityMatcher(
                         "/login",
+                        "/setup/**", // LIBERADO O ENDPOINT DE SETUP
                         "/swagger-ui.html",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
@@ -105,6 +106,7 @@ public class AuthorizationServerConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll()
                 )
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/setup/**")) // DESABILITA CSRF PARA O SETUP
                 .formLogin(form -> form.loginPage("/login"))
                 .oauth2Login(oauth2 -> oauth2.loginPage("/login"));
 
@@ -178,21 +180,7 @@ public class AuthorizationServerConfiguration {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:8080") //todo
-                //todo obtem a chave publica para verificar a assinatura do token
-                .jwkSetEndpoint("/oauth2/jwks")
-                //todo obtem o token
-                .tokenEndpoint("/oauth2/token")
-                //todo para consultar o status do endpoint
-                .tokenIntrospectionEndpoint("/oauth2/introspect")
-                //todo para revogar o token
-                .tokenRevocationEndpoint("/oauth2/revoke")
-                //todo authorization endpoint
-                .authorizationEndpoint("/oauth2/authorized")
-                //todo informações usuario OPEN ID CONNECT
-                .oidcUserInfoEndpoint("/oauth2/userinfo")
-                //todo logout
-                .oidcLogoutEndpoint("/oauth2/logout")
+                .issuer("http://localhost:8080")
                 .build();
     }
 

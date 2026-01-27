@@ -1,0 +1,52 @@
+services:
+  app:
+    build: .
+    container_name: scad-app
+    ports:
+      - "8080:8080"
+    environment:
+      - URL_DATABASE=jdbc:mysql://scad-db:3306/scad_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - GOOGLE_CLIENT_ID=seu_client_id
+      - GOOGLE_CLIENT_SECRET=seu_client_secret
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - scad-network
+
+  db:
+    image: mysql:8.0
+    container_name: scad-db
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_DATABASE=scad_db
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - scad-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  frontend:
+    build: ./scad-ui
+    container_name: scad-ui
+    ports:
+      - "4200:80" # Mapeia a porta 80 do Nginx para a 4200 do seu PC
+    depends_on:
+      - app
+    networks:
+      - scad-network
+
+volumes:
+  db_data:
+
+networks:
+  scad-network:

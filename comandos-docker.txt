@@ -1,0 +1,30 @@
+# --- Comandos Úteis de Rede ---
+
+# Verificar qual processo está usando uma porta específica (Ex: 5432)
+netstat -aof | findstr :5432
+
+# --- Configuração de Rede Docker ---
+
+# Criar uma rede customizada para os containers se comunicarem pelo nome
+# Se der erro "network already exists", pode ignorar e seguir para o próximo passo.
+# Para remover a rede antiga se necessário: docker network rm library-network
+docker network create library-network
+
+
+# --- Container do MySQL ---
+
+# Rodar container MySQL
+# O mapeamento de porta -p 6632:3306 deve apontar para 3306 no container.
+# Conecte-se usando a porta do host (6603 neste caso).
+docker run --name mysql-y -e MYSQL_ROOT_PASSWORD=*124376* -p 6603:3306 --network library-network -d mysql:latest
+
+# Descobrir o IP do container dentro da rede Docker
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql-y
+
+
+# --- Container do PgAdmin 4 ---
+
+# Rodar PgAdmin 4 para gerenciar bancos PostgreSQL
+# -p 8080:80 -> Acessa no seu navegador em http://localhost:8080. O PgAdmin escuta na porta 80 dentro do container.
+# É necessário definir um e-mail e senha de login.
+docker run --name pgadmin4-prod -p 8080:80 -e "PGADMIN_DEFAULT_EMAIL=admin@example.com" -e "PGADMIN_DEFAULT_PASSWORD=admin" --network library-network -d dpage/pgadmin4
