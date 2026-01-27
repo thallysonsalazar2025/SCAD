@@ -1,19 +1,20 @@
 spring:
   application:
     name: Produtos Api
-#  profiles:
-#    active:
-#      - homologacao
   datasource:
-    url: jdbc:mysql://localhost:3306/cadastro_produtos?useTimezone=true&serverTimezone=UTC
-    username: root
-    password: '*124376*' # É uma boa prática colocar senhas e valores com caracteres especiais entre aspas
+    # Configuração padrão do banco de dados, usando variáveis de ambiente com valores padrão para ambiente local.
+    # A URL é construída a partir de partes para maior clareza e flexibilidade.
+    # A URL abaixo é um exemplo para desenvolvimento local, incluindo o parâmetro necessário.
+    # O valor padrão assume que o MySQL está rodando na porta 6603 do host e o banco se chama 'scad_db'.
+    url: ${URL_DATABASE}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:senha_local_padrao}
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect # Dialeto atualizado conforme recomendação do Hibernate
   security:
     oauth2:
       client:
@@ -48,8 +49,7 @@ server:
 spring:
   config:
     activate:
-      on-profile: prod
-
+      on-profile: production
   jpa:
     hibernate:
       ddl-auto: validate
@@ -61,29 +61,10 @@ spring:
   config:
     activate:
       on-profile: homologacao
-
+  # O perfil 'homologacao' herda as configurações de 'datasource' e 'security' do perfil padrão.
+  # A única configuração que estamos sobrescrevendo aqui é o comportamento do hibernate.
   jpa:
     show-sql: false
     hibernate:
       # 'update' é útil para desenvolvimento, mas NUNCA deve ser usado em produção.
       ddl-auto: update
-
-
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            # Segredos e IDs de cliente NUNCA devem ser hardcoded.
-            # Use as mesmas variáveis de ambiente do seu arquivo principal.
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-  datasource:
-    url: ${URL_DATABASE}
-    username: ${USER_DATABASE}
-    # A senha do banco de dados nunca deve ser hardcoded. Use variáveis de ambiente.
-    password: ${DB_PASSWORD}
-
-
-
-

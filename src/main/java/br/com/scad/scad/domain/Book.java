@@ -1,5 +1,6 @@
 package br.com.scad.scad.domain;
 
+import br.com.scad.scad.generated.model.BookRequest;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
