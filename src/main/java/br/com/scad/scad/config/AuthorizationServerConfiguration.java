@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -91,6 +92,10 @@ public class AuthorizationServerConfiguration {
     @Order(2)
     public SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
 
+        // Cria um handler de sucesso para redirecionar para a URL do Angular
+        SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        successHandler.setDefaultTargetUrl("http://localhost:4200/cadastro-usuario");
+
         http
                 .securityMatcher(
                         "/login",
@@ -107,8 +112,14 @@ public class AuthorizationServerConfiguration {
                         .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/setup/**")) // DESABILITA CSRF PARA O SETUP
-                .formLogin(form -> form.loginPage("/login"))
-                .oauth2Login(oauth2 -> oauth2.loginPage("/login"));
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .successHandler(successHandler) // Adicionado o handler de sucesso
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .successHandler(successHandler) // Adicionado o handler de sucesso
+                );
 
         return http.build();
     }

@@ -20,8 +20,10 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
         .logo {
-            width: 120px;
-            margin-bottom: 20px;
+            width: 150px; /* Aumentei um pouco para dar mais destaque */
+            height: auto;
+            margin-bottom: 30px; /* Mais espaço abaixo da logo */
+            object-fit: contain;
         }
     </style>
 </head>
@@ -35,8 +37,9 @@
             <div class="login-box w-100">
 
                 <div class="text-center">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3079/3079018.png" class="logo" alt="Logo do Sistema">
-                    <h3 class="mb-4">SGEP</h3>
+                    <!-- Apenas a imagem -->
+                    <img th:src="@{/images/logo.jpeg}" class="logo" alt="Logo do Sistema">
+                    <!-- O TÍTULO FOI REMOVIDO -->
                 </div>
 
                 <!-- Bloco para exibir mensagens de erro ou sucesso -->

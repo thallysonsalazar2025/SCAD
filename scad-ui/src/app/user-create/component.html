@@ -1,0 +1,49 @@
+<div class="card">
+    <div class="header">
+        <h1>Novo Usuário</h1>
+        <p>Preencha os dados para conceder acesso ao sistema.</p>
+    </div>
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+        <div class="form-group">
+            <label>Nome de Usuário</label>
+            <input type="text" formControlName="username" class="form-control" placeholder="Ex: joaosilva">
+        </div>
+
+        <div class="form-group">
+            <label>E-mail Corporativo</label>
+            <input type="email" formControlName="email" class="form-control" placeholder="Ex: joao@scad.com">
+        </div>
+
+        <div class="form-group">
+            <label>Senha de Acesso</label>
+            <input type="password" formControlName="password" class="form-control" placeholder="******">
+        </div>
+
+        <div class="form-group">
+            <label>Perfil de Acesso (Role)</label>
+            <select formControlName="role" class="form-control select-role">
+                <option *ngFor="let role of roles" [value]="role.value">
+                    {{ role.label }}
+                </option>
+            </select>
+            <small class="hint">
+                * <strong>ADMIN:</strong> Acesso total. <br>
+                * <strong>GERENTE:</strong> Não cria usuários. <br>
+                * <strong>USUARIO:</strong> Apenas visualiza.
+            </small>
+        </div>
+
+        <div *ngIf="message" class="alert" [class.success]="!message.includes('Erro')">
+            {{ message }}
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn-primary" [disabled]="userForm.invalid || isLoading">
+                {{ isLoading ? 'Salvando...' : 'Cadastrar Usuário' }}
+            </button>
+        </div>
+
+    </form>
+</div>
