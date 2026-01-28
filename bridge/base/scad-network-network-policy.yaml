@@ -1,0 +1,24 @@
+#! scad-network-network-policy.yaml
+# Generated code, do not edit
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    name: scad-network-network-policy
+    namespace: scad
+spec:
+    podSelector:
+        matchLabels:
+            com.docker.compose.network.scad-network: "true"
+    policyTypes:
+        - Ingress
+        - Egress
+    ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                    com.docker.compose.network.scad-network: "true"
+    egress:
+        - to:
+            - podSelector:
+                matchLabels:
+                    com.docker.compose.network.scad-network: "true"

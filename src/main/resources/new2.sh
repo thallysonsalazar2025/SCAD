@@ -1,0 +1,1 @@
+docker run --name mysql-prod -e MYSQL_ROOT_PASSWORD='*124376*' -e MYSQL_DATABASE=cadastro_produtos-prod -p 3307:3306 -d mysql:8.0

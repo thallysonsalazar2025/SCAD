@@ -20,10 +20,14 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
         .logo {
-            width: 150px; /* Aumentei um pouco para dar mais destaque */
+            /* Aumentei um pouco para ser o destaque principal */
+            width: 180px;
             height: auto;
-            margin-bottom: 30px; /* Mais espaço abaixo da logo */
+            margin-bottom: 30px;
             object-fit: contain;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 </head>
@@ -37,9 +41,8 @@
             <div class="login-box w-100">
 
                 <div class="text-center">
-                    <!-- Apenas a imagem -->
+                    <!-- Apenas a imagem, sem textos extras -->
                     <img th:src="@{/images/logo.jpeg}" class="logo" alt="Logo do Sistema">
-                    <!-- O TÍTULO FOI REMOVIDO -->
                 </div>
 
                 <!-- Bloco para exibir mensagens de erro ou sucesso -->

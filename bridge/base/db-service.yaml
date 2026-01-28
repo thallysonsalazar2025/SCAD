@@ -1,0 +1,19 @@
+#! db-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: db-published
+    namespace: scad
+    labels:
+        com.docker.compose.project: scad
+        com.docker.compose.service: db
+spec:
+    selector:
+        com.docker.compose.project: scad
+        com.docker.compose.service: db
+    ports:
+        - name: db-3307
+          port: 3307
+          protocol: TCP
+          targetPort: db-3306

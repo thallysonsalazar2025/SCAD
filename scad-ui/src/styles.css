@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --baby-blue-light: #E0F7FA;
+    --baby-blue-medium: #B2EBF2;
+    --baby-blue-dark: #0097A7;
+    --baby-blue-text: #006064;
+    --white: #ffffff;
+    --gray-bg: #f8f9fa;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif; /* <<< FONTE ATUALIZADA */
+    background-color: var(--gray-bg);
+    color: #333;
+}
+
+/* Estilos de Card e Botão (mantidos, mas com a nova fonte) */
+.card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.btn-primary {
+    background-color: var(--baby-blue-dark);
+    color: var(--white);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 151, 167, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: #00838F;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 151, 167, 0.4);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--baby-blue-dark);
+    box-shadow: 0 0 0 3px rgba(0, 151, 167, 0.1);
+}

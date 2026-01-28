@@ -1,0 +1,55 @@
+<div class="layout-container">
+
+  <!-- MENU LATERAL COM NOVO ESTILO -->
+  <aside class="sidebar">
+    <div class="brand">
+      <!-- APENAS A LOGO -->
+      <img src="assets/logo.jpeg" alt="SCAD Logo" class="brand-logo">
+    </div>
+
+    <nav class="menu">
+      <!-- Itens de Pesquisa (Sempre abertos) -->
+      <a routerLink="/pesquisar-livros" routerLinkActive="active" class="menu-item">
+        <span>Pesquisar Livros</span>
+      </a>
+      <a routerLink="/pesquisar-autor" routerLinkActive="active" class="menu-item">
+        <span>Pesquisar Autor</span>
+      </a>
+
+      <!-- Seção de Gestão (Acordeão) -->
+      <div class="menu-section" *ngIf="isManager">
+        <button class="menu-header" (click)="toggleMenu('gestao')">
+          <span>Gestão</span>
+          <span class="chevron" [class.rotate]="openMenu === 'gestao'">&#9660;</span> <!-- Seta simples -->
+        </button>
+        <div class="submenu" [class.open]="openMenu === 'gestao'">
+          <a routerLink="/cadastro-livro" routerLinkActive="active" class="menu-item"><span>Cadastrar Livro</span></a>
+          <a routerLink="/cadastro-autor" routerLinkActive="active" class="menu-item"><span>Cadastrar Autor</span></a>
+          <a routerLink="/cadastro-cliente" routerLinkActive="active" class="menu-item"><span>Cadastrar Cliente</span></a>
+        </div>
+      </div>
+
+      <!-- Seção de Administração (Acordeão) -->
+      <div class="menu-section" *ngIf="isAdmin">
+        <button class="menu-header" (click)="toggleMenu('admin')">
+          <span>Administração</span>
+          <span class="chevron" [class.rotate]="openMenu === 'admin'">&#9660;</span> <!-- Seta simples -->
+        </button>
+        <div class="submenu" [class.open]="openMenu === 'admin'">
+          <a routerLink="/cadastro-usuario" routerLinkActive="active" class="menu-item"><span>Cadastrar Usuário</span></a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="footer">
+      <button (click)="logout()" class="btn-logout">
+        <span>Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ÁREA DE CONTEÚDO -->
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
