@@ -14,6 +14,7 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", expression = "java(passwordEncoder.encode(user.getPassword()))")
     @Mapping(target = "email", source = "user.email")
+
     UserDomain toUser(UserRegistrationRequest user, PasswordEncoder passwordEncoder);
 
     UserResponse toUserResponse(UserDomain userAuthen);

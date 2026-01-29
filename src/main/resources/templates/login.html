@@ -42,9 +42,8 @@
 
                 <div class="text-center">
                     <!-- Apenas a imagem, sem textos extras -->
-                    <img th:src="@{/images/logo.jpeg}" class="logo" alt="Logo do Sistema">
+                    <img th:src="@{/images/logo.jpeg}" class="logo">
                 </div>
-
                 <!-- Bloco para exibir mensagens de erro ou sucesso -->
                 <div th:if="${param.error == 'true'}" class="alert alert-danger" role="alert">
                     Usuário ou senha inválidos.

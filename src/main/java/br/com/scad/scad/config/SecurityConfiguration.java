@@ -14,16 +14,21 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     @Bean
-    @Order(2) // Define esta cadeia com prioridade menor
+    @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // A MÁGICA ACONTECE AQUI: Esta cadeia só se aplica a URLs que começam com /api/
-            .securityMatcher("/api/**")
-            .authorizeHttpRequests(authorize -> authorize
-                .anyRequest().authenticated()
-            )
-            // Configura o servidor para aceitar e validar tokens JWT (Bearer Token)
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/images/**",
+                                "/css/**",
+                                "/js/**",
+                                "/webjars/**",
+                                "/login",
+                                "/error"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }

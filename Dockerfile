@@ -1,33 +1,42 @@
-# --- Estágio 1: Build (Compilação) ---
-# Usamos uma imagem que já tem Maven e JDK 21 instalados
-FROM maven:3.9.6-eclipse-temurin-21 AS build
+# --- Estágio 1: Build do Frontend (Angular) ---
+FROM node:20 AS frontend-build
 
-# Define o diretório de trabalho dentro do container de build
+WORKDIR /app-ui
+
+# Copia os arquivos do projeto Angular
+COPY scad-ui/package*.json ./
+RUN npm install
+
+COPY scad-ui/ ./
+# Compila o Angular (gera a pasta dist/scad-ui)
+RUN npm run build -- --configuration production
+
+# --- Estágio 2: Build do Backend (Java) ---
+FROM maven:3.9-amazoncorretto-21 AS backend-build
+
 WORKDIR /app
 
-# Copia o arquivo pom.xml e baixa as dependências (isso aproveita o cache do Docker)
+# Copia o pom.xml e baixa dependências
 COPY pom.xml .
-# Baixa as dependências sem copiar o código fonte ainda (para otimizar cache)
 RUN mvn dependency:go-offline
 
-# Copia todo o código fonte do projeto
+# Copia o código fonte Java
 COPY src ./src
 
-# Compila o projeto e gera o arquivo .jar (pula os testes para agilizar)
+# Copia o build do Angular (Estágio 1) para a pasta static do Spring Boot
+COPY --from=frontend-build /app-ui/dist/scad-ui ./src/main/resources/static
+
+# Compila o projeto Java (agora contendo o frontend)
 RUN mvn clean package -DskipTests
 
-# --- Estágio 2: Runtime (Execução) ---
-# Usamos uma imagem leve apenas com o JRE/JDK para rodar a aplicação
-FROM eclipse-temurin:21-jdk-jammy
+# --- Estágio 3: Runtime (Execução) ---
+FROM amazoncorretto:21
 
 WORKDIR /app
 
-# Copia o .jar gerado no estágio anterior (build) para a imagem final
-# O --from=build refere-se ao alias que demos na primeira linha
-COPY --from=build /app/target/*.jar app.jar
+# Copia o .jar gerado
+COPY --from=backend-build /app/target/*.jar app.jar
 
-# Expõe a porta 8080
 EXPOSE 8080
 
-# Comando para rodar a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]
