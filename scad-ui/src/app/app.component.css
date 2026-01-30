@@ -33,6 +33,13 @@
   filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));
 }
 
+.user-name {
+  margin-top: 5px;
+  font-weight: 600;
+  color: var(--baby-blue-text);
+  font-size: 0.9rem;
+}
+
 .role-badge {
   background: var(--baby-blue-dark);
   color: white;

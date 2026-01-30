@@ -12,6 +12,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 export class AppComponent {
   // SIMULAÇÃO DO USUÁRIO LOGADO (Mude para 'GERENTE' ou 'USUARIO' para testar)
   userRole: string = 'ADMIN';
+  userName: string = 'Admin User'; // Nome do usuário logado
 
   // Lógica para controlar o menu acordeão
   public openMenu: string | null = null;
