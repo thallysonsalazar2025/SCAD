@@ -1,0 +1,52 @@
+<div class="login-wrapper">
+  <div class="login-card">
+
+    <!-- LOGO EM DESTAQUE -->
+    <div class="brand-area">
+      <img src="/assets/logo.jpeg" alt="SCAD Logo" class="logo">
+    </div>
+
+    <!-- TÍTULO EM PORTUGUÊS -->
+    <h2>Acesso ao Sistema</h2>
+    <p class="subtitle">Informe suas credenciais para continuar</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <!-- USUÁRIO -->
+      <div class="material-textfield">
+        <input id="username" type="text" formControlName="username" placeholder=" ">
+        <label for="username">Usuário</label>
+        <i class="material-icons field-icon">person</i>
+      </div>
+
+      <!-- SENHA -->
+      <div class="material-textfield">
+        <input id="password" type="password" formControlName="password" placeholder=" ">
+        <label for="password">Senha</label>
+        <i class="material-icons field-icon">lock</i>
+      </div>
+
+      <!-- MENSAGEM DE ERRO -->
+      <div *ngIf="errorMessage" class="error-message">
+        <i class="material-icons">error_outline</i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- BOTÃO ENTRAR -->
+      <button type="submit" class="btn-submit" [disabled]="loginForm.invalid || isLoading">
+        {{ isLoading ? 'Autenticando...' : 'Entrar' }}
+      </button>
+
+      <div class="divider">
+        <span>ou</span>
+      </div>
+
+      <!-- BOTÃO GOOGLE -->
+      <button type="button" class="btn-google" (click)="loginWithGoogle()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="G">
+        Entrar com Google
+      </button>
+
+    </form>
+  </div>
+</div>

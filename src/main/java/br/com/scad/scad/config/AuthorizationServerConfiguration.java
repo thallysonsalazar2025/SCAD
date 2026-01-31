@@ -6,11 +6,14 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -21,11 +24,12 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
@@ -38,8 +42,6 @@ import java.util.UUID;
 @Configuration
 public class AuthorizationServerConfiguration {
 
-    // Matcher local para os endpoints do Authorization Server (reutilizável)
-    // Não inclui "/oauth2/authorization/**" para não bloquear OAuth2 Client (ex: Google login)
     private static RequestMatcher authorizationServerEndpointsMatcher() {
         final String[] endpoints = {
                 "/.well-known",
@@ -64,42 +66,35 @@ public class AuthorizationServerConfiguration {
         };
     }
 
-    // 1. CADEIA DE FILTROS PARA OS ENDPOINTS DO AUTHORIZATION SERVER
     @Bean
-    @Order(1) // Define esta cadeia como a de maior prioridade
+    @Order(1)
     @SuppressWarnings("deprecation")
     public SecurityFilterChain serverSecurityFilterChain(HttpSecurity http) throws Exception {
-        // Garantir que esta cadeia só trate os endpoints do Authorization Server
         http.securityMatcher(authorizationServerEndpointsMatcher());
-
-        // Aplica a configuração padrão do Authorization Server (para endpoints específicos)
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-
-        // Habilita o suporte ao OpenID Connect 1.0
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());
-
-        // Configura o redirecionamento para a página de login se o usuário não estiver autenticado
         http.exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
         );
-
         return http.build();
     }
 
-    // 2. CADEIA DE FILTROS PADRÃO PARA A APLICAÇÃO (API E LOGIN)
     @Bean
     @Order(2)
     public SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
 
-        // Cria um handler de sucesso para redirecionar para a URL do Angular
-        SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
-        successHandler.setDefaultTargetUrl("http://localhost:4200/cadastro-usuario");
+        AuthenticationSuccessHandler successHandler = (request, response, authentication) -> {
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":\"success\"}");
+        };
 
         http
                 .securityMatcher(
                         "/login",
-                        "/setup/**", // LIBERADO O ENDPOINT DE SETUP
+                        "/api/login",
+                        "/setup/**",
                         "/swagger-ui.html",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
@@ -111,14 +106,15 @@ public class AuthorizationServerConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll()
                 )
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/setup/**")) // DESABILITA CSRF PARA O SETUP
+                .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .successHandler(successHandler) // Adicionado o handler de sucesso
+                        .loginProcessingUrl("/login")
+                        .successHandler(successHandler)
+                        .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
-                        .successHandler(successHandler) // Adicionado o handler de sucesso
+                        .defaultSuccessUrl("/dashboard", true) // MUDANÇA: Redireciona para o Dashboard
                 );
 
         return http.build();
@@ -127,42 +123,32 @@ public class AuthorizationServerConfiguration {
     @Bean
     @Order(3)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
-
         http
                 .securityMatcher(new NegatedRequestMatcher(authorizationServerEndpointsMatcher()))
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().authenticated()
                 )
+                .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
 
-
-    /**
-     * Define as configurações para os tokens gerados (ex: tempo de vida).
-     */
     @Bean
     public TokenSettings tokenSettings() {
         return TokenSettings.builder()
-                //todo aces_token é o tokn utilizado nas requisições
-                .accessTokenTimeToLive(Duration.ofMinutes(60)) // Access token válido por 60 minutos
-                //todo token para renovar o acess o tempo dele é maior que o acess
-                .refreshTokenTimeToLive(Duration.ofDays(90)) // a seção é extendida por mais 90 minutos
+                .accessTokenTimeToLive(Duration.ofMinutes(60))
+                .refreshTokenTimeToLive(Duration.ofDays(90))
                 .build();
     }
 
-    /**
-     * Define as configurações para os clients registrados (ex: tela de consentimento).
-     */
     @Bean
     public ClientSettings clientSettings() {
         return ClientSettings.builder()
-                .requireAuthorizationConsent(false) // Desabilita a tela de consentimento para o client
+                .requireAuthorizationConsent(false)
                 .build();
     }
 
-    // 3. BEANS ESSENCIAIS PARA O AUTHORIZATION SERVER
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
         KeyPair keyPair = generateRsaKey();
@@ -191,7 +177,7 @@ public class AuthorizationServerConfiguration {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:8080")
+                .issuer("http://scad-app:8080")
                 .build();
     }
 
@@ -218,7 +204,4 @@ public class AuthorizationServerConfiguration {
             }
         };
     }
-
-
-
 }

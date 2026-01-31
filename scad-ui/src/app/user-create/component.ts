@@ -7,15 +7,14 @@ import { HttpClient } from '@angular/common/http';
     selector: 'app-user-create',
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
-    templateUrl: './component.html', // CORRIGIDO: Removido o prefixo user-create.
-    styleUrls: ['./component.css']   // CORRIGIDO: Removido o prefixo user-create.
+    templateUrl: './component.html',
+    styleUrls: ['./component.css']
 })
 export class UserCreateComponent {
     userForm: FormGroup;
     isLoading = false;
     message = '';
 
-    // Perfis disponíveis
     roles = [
         { value: 'ADMIN', label: 'Administrador (Acesso Total)' },
         { value: 'GERENTE', label: 'Gerente (Gestão de Livros/Autores)' },
@@ -27,7 +26,7 @@ export class UserCreateComponent {
             username: ['', [Validators.required, Validators.minLength(3)]],
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(6)]],
-            role: ['USUARIO', Validators.required] // Padrão: Usuário
+            role: ['USUARIO', Validators.required]
         });
     }
 
@@ -37,11 +36,10 @@ export class UserCreateComponent {
         this.isLoading = true;
         this.message = '';
 
-        // Ajuste a URL para o seu backend
-        const url = 'http://localhost:8080/api/v1/users';
+        // CORREÇÃO: Caminho relativo. O Nginx redirecionará para o backend.
+        // Isso funciona em qualquer dispositivo (celular, outro PC, etc).
+        const url = '/api/v1/users';
 
-        // Aqui você precisaria adicionar o Header Authorization com o token
-        // Mas para o exemplo visual, vamos focar no envio
         this.http.post(url, this.userForm.value).subscribe({
             next: () => {
                 this.message = 'Usuário cadastrado com sucesso!';

@@ -1,0 +1,27 @@
+<div class="form-container">
+  <h2>Cadastrar Novo Autor</h2>
+
+  <form [formGroup]="authorForm" (ngSubmit)="onSubmit()">
+
+    <div class="material-textfield">
+      <input id="name" type="text" formControlName="name" placeholder=" ">
+      <label for="name">Nome Completo</label>
+    </div>
+
+    <div class="material-textfield">
+      <input id="nationality" type="text" formControlName="nationality" placeholder=" ">
+      <label for="nationality">Nacionalidade</label>
+    </div>
+
+    <div *ngIf="message" class="message" [class.error]="message.includes('Erro')" [class.success]="!message.includes('Erro')">
+      <i class="material-icons">{{ message.includes('Erro') ? 'error' : 'check_circle' }}</i>
+      <span>{{ message }}</span>
+    </div>
+
+    <button type="submit" [disabled]="authorForm.invalid || isLoading" class="btn-submit">
+      <i class="material-icons" style="margin-right: 8px;">person_add</i>
+      {{ isLoading ? 'Cadastrando...' : 'Cadastrar Autor' }}
+    </button>
+
+  </form>
+</div>

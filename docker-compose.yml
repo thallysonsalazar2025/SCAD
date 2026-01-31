@@ -5,7 +5,6 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Agora os valores são lidos do arquivo .env
       - URL_DATABASE=${URL_DATABASE}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
@@ -24,14 +23,12 @@ services:
       - "3307:3306"
     environment:
       - MYSQL_DATABASE=scad_db
-      # Usa a mesma variável de senha para garantir que o Java consiga conectar
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
     networks:
       - scad-network
     healthcheck:
-      # O healthcheck também precisa saber a senha para testar a conexão
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
       interval: 10s
       timeout: 5s
@@ -42,7 +39,7 @@ services:
     build: ./scad-ui
     container_name: scad-ui
     ports:
-      - "4200:80"
+      - "80:80" # MUDANÇA: Porta 80 (padrão) em vez de 4200
     depends_on:
       - app
     networks:

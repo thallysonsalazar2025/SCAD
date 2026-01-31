@@ -1,0 +1,32 @@
+<div class="form-container">
+  <h2>Cadastrar Novo Cliente</h2>
+
+  <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+
+    <div class="material-textfield">
+      <input id="name" type="text" formControlName="name" placeholder=" ">
+      <label for="name">Nome Completo</label>
+    </div>
+
+    <div class="material-textfield">
+      <input id="email" type="email" formControlName="email" placeholder=" ">
+      <label for="email">E-mail</label>
+    </div>
+
+    <div class="material-textfield">
+      <input id="phone" type="text" formControlName="phone" placeholder=" ">
+      <label for="phone">Telefone</label>
+    </div>
+
+    <div *ngIf="message" class="message" [class.error]="message.includes('Erro')" [class.success]="!message.includes('Erro')">
+      <i class="material-icons">{{ message.includes('Erro') ? 'error' : 'check_circle' }}</i>
+      <span>{{ message }}</span>
+    </div>
+
+    <button type="submit" [disabled]="clientForm.invalid || isLoading" class="btn-submit">
+      <i class="material-icons" style="margin-right: 8px;">group_add</i>
+      {{ isLoading ? 'Cadastrando...' : 'Cadastrar Cliente' }}
+    </button>
+
+  </form>
+</div>

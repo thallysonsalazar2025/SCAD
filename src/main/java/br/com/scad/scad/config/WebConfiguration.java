@@ -1,36 +1,18 @@
 package br.com.scad.scad.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.resource.PathResourceResolver;
-
-import java.io.IOException;
 
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Serve arquivos estáticos (JS, CSS, Imagens) normalmente
-        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/")
-                .resourceChain(true)
-                .addResolver(new PathResourceResolver() {
-                    @Override
-                    protected Resource getResource(String resourcePath, Resource location) throws IOException {
-                        Resource requestedResource = location.createRelative(resourcePath);
-
-                        // Se o arquivo existe (ex: main.js, styles.css), retorna ele
-                        if (requestedResource.exists() && requestedResource.isReadable()) {
-                            return requestedResource;
-                        }
-
-                        // Se não existe (ex: /login, /usuarios), retorna o index.html para o Angular tratar
-                        return new ClassPathResource("/static/index.html");
-                    }
-                });
+    public void addCorsMappings(CorsRegistry registry) {
+        // Permite que o Frontend (qualquer origem) acesse a API
+        // Isso é importante se o acesso não for via Proxy reverso em algum momento
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT");
     }
 }

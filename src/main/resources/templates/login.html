@@ -20,7 +20,6 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
         .logo {
-            /* Aumentei um pouco para ser o destaque principal */
             width: 180px;
             height: auto;
             margin-bottom: 30px;
@@ -41,10 +40,8 @@
             <div class="login-box w-100">
 
                 <div class="text-center">
-                    <!-- Apenas a imagem, sem textos extras -->
                     <img th:src="@{/images/logo.jpeg}" class="logo">
                 </div>
-                <!-- Bloco para exibir mensagens de erro ou sucesso -->
                 <div th:if="${param.error == 'true'}" class="alert alert-danger" role="alert">
                     Usuário ou senha inválidos.
                 </div>
@@ -52,7 +49,8 @@
                     Você foi desconectado com sucesso.
                 </div>
 
-                <form method="post" th:action="@{/login}">
+                <!-- CORREÇÃO: Action fixa relativa para manter a porta do navegador (4200) -->
+                <form method="post" action="/login">
                     <div class="mb-3">
                         <label for="username" class="form-label">Usuário</label>
                         <input type="text" class="form-control" id="username" name="username" placeholder="Digite seu usuario" required>
@@ -83,17 +81,14 @@
         <div class="col-md-8 d-none d-md-block p-0" style="overflow: hidden;">
             <div id="carouselLivraria" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
                 <div class="carousel-inner h-100">
-
                     <div class="carousel-item active h-100">
                         <img src="https://gestaoflex.com.br/imgb/o-sistema-pdv-e-sua-importancia-na-gestao-de-caixa-e-estoque.jpeg"
                              class="d-block w-100 h-100" style="object-fit: cover;" alt="Gestão de Estoque">
                     </div>
-
                     <div class="carousel-item h-100">
                         <img src="https://boico.com.br/wp-content/uploads/2023/12/crm-customer-relationship-management-para-conceito-de-sistema-de-marketing-de-vendas-de-negocios_31965-13457-e1706630198262.jpg"
                              class="d-block w-100 h-100" style="object-fit: cover;" alt="Relacionamento com Cliente (CRM)">
                     </div>
-
                 </div>
             </div>
         </div>

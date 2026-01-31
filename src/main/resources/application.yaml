@@ -2,10 +2,6 @@ spring:
   application:
     name: Produtos Api
   datasource:
-    # Configuração padrão do banco de dados, usando variáveis de ambiente com valores padrão para ambiente local.
-    # A URL é construída a partir de partes para maior clareza e flexibilidade.
-    # A URL abaixo é um exemplo para desenvolvimento local, incluindo o parâmetro necessário.
-    # O valor padrão assume que o MySQL está rodando na porta 6603 do host e o banco se chama 'scad_db'.
     url: ${URL_DATABASE}
     username: ${DB_USER:root}
     password: ${DB_PASSWORD:senha_local_padrao}
@@ -14,7 +10,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect # Dialeto atualizado conforme recomendação do Hibernate
+        dialect: org.hibernate.dialect.MySQLDialect
   security:
     oauth2:
       client:
@@ -26,12 +22,14 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+
 management:
   port: 9090
   endpoints:
     web:
       exposure:
         include: "*"
+
 logging:
   file:
     name: application.log
@@ -43,6 +41,9 @@ server:
   port: 8080
   servlet:
     context-path: /api/v1
+  # CRUCIAL: Faz o Spring respeitar os cabeçalhos X-Forwarded do Nginx
+  # Isso garante que os redirecionamentos usem o IP/Porta do cliente (Nginx) e não do container
+  forward-headers-strategy: framework
 
 ## Perfil de produção
 ---
@@ -61,10 +62,7 @@ spring:
   config:
     activate:
       on-profile: homologacao
-  # O perfil 'homologacao' herda as configurações de 'datasource' e 'security' do perfil padrão.
-  # A única configuração que estamos sobrescrevendo aqui é o comportamento do hibernate.
   jpa:
     show-sql: false
     hibernate:
-      # 'update' é útil para desenvolvimento, mas NUNCA deve ser usado em produção.
       ddl-auto: update

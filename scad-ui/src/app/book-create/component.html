@@ -1,0 +1,42 @@
+<div class="form-container">
+  <h2>Cadastrar Novo Livro</h2>
+
+  <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+
+    <div class="material-textfield">
+      <input id="title" type="text" formControlName="title" placeholder=" ">
+      <label for="title">Título do Livro</label>
+    </div>
+
+    <div class="material-textfield">
+      <input id="isbn" type="text" formControlName="isbn" placeholder=" ">
+      <label for="isbn">ISBN</label>
+    </div>
+
+    <div class="material-textfield">
+      <input id="authorId" type="number" formControlName="authorId" placeholder=" ">
+      <label for="authorId">ID do Autor</label>
+    </div>
+
+    <div class="material-textfield">
+      <select id="genre" formControlName="genre">
+        <option value="" disabled selected></option>
+        <option value="FICCAO">Ficção</option>
+        <option value="TECNICO">Técnico</option>
+        <option value="ROMANCE">Romance</option>
+      </select>
+      <label for="genre">Gênero</label>
+    </div>
+
+    <div *ngIf="message" class="message" [class.error]="message.includes('Erro')" [class.success]="!message.includes('Erro')">
+      <i class="material-icons">{{ message.includes('Erro') ? 'error' : 'check_circle' }}</i>
+      <span>{{ message }}</span>
+    </div>
+
+    <button type="submit" [disabled]="bookForm.invalid || isLoading" class="btn-submit">
+      <i class="material-icons" style="margin-right: 8px;">library_add</i>
+      {{ isLoading ? 'Cadastrando...' : 'Cadastrar Livro' }}
+    </button>
+
+  </form>
+</div>

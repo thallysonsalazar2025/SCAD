@@ -1,90 +1,79 @@
 .layout-container {
   display: flex;
   height: 100vh;
+  /* Removemos o background daqui para usar o do body (degradê) */
+  background: transparent;
 }
 
-/* Sidebar */
+/* --- SIDEBAR --- */
 .sidebar {
   width: 280px;
-  background-color: var(--baby-blue-light);
-  color: var(--baby-blue-text);
+  background-color: #FFFFFF; /* Branca Pura */
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #CFD8DC;
+  /* Removemos a sombra lateral para um visual mais "flat" e limpo,
+     já que o fundo do conteúdo vai escurecer levemente */
+  border-right: 1px solid rgba(0,0,0,0.05);
+  z-index: 20;
+  padding: 0 12px;
 }
 
+/* Área da Marca */
 .brand {
-  padding: 20px;
-  text-align: center;
-  border-bottom: 1px solid #B2EBF2;
-  position: relative; /* Necessário para posicionar o badge */
-}
-
-/* ESCONDE O TÍTULO H2 */
-.brand h2 {
-  display: none;
+  height: 140px; /* Altura ajustada para acomodar bem o logo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  background-color: #FFFFFF; /* Garante fundo branco sob a imagem */
 }
 
 .brand-logo {
-  max-width: 80%;
-  height: auto;
-  margin-bottom: 10px; /* Reduzido para aproximar o badge */
+  max-width: 200px; /* Logo um pouco maior */
+  max-height: 90px;
   object-fit: contain;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));
 }
 
-.user-name {
-  margin-top: 5px;
-  font-weight: 600;
-  color: var(--baby-blue-text);
-  font-size: 0.9rem;
-}
-
-.role-badge {
-  background: var(--baby-blue-dark);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  /* Posicionamento elegante sobre a imagem */
-  position: absolute;
-  bottom: 25px; /* Ajuste fino da posição vertical */
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
+/* Menu Container */
 .menu {
   flex: 1;
-  padding: 15px 10px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-top: 15px; /* Espaço extra após a área da marca */
+  gap: 6px;
 }
 
+/* --- ITEM DE MENU --- */
 .menu-item {
-  padding: 12px 20px;
-  text-decoration: none;
-  color: var(--baby-blue-text);
-  border-radius: 8px;
-  transition: all 0.3s;
-  font-weight: 500;
   display: flex;
   align-items: center;
+  height: 52px;
+  padding: 0 16px 0 24px;
+  text-decoration: none;
+  color: #44474F;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 26px;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .menu-item:hover {
-  background-color: var(--baby-blue-medium);
+  background-color: #F5F5F5;
+  color: #1B1B1F;
 }
 
 .menu-item.active {
-  background-color: var(--baby-blue-dark);
-  color: white;
-  box-shadow: 0 4px 10px rgba(0, 151, 167, 0.2);
+  background-color: #D8E2FF;
+  color: #001A41;
 }
 
-/* Estilos do Acordeão */
+.menu-item i {
+  margin-right: 16px;
+  font-size: 24px;
+  color: inherit;
+}
+
+/* --- ACORDEÃO --- */
 .menu-section {
   display: flex;
   flex-direction: column;
@@ -92,61 +81,93 @@
 
 .menu-header {
   width: 100%;
+  height: 52px;
   background: transparent;
   border: none;
-  padding: 12px 20px;
-  font-family: 'Inter', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--baby-blue-text);
+  padding: 0 16px 0 24px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #44474F;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  border-radius: 8px;
-}
-.menu-header:hover {
-  background-color: var(--baby-blue-medium);
+  border-radius: 26px;
+  transition: background-color 0.2s;
 }
 
+.menu-header:hover {
+  background-color: #F5F5F5;
+  color: #1B1B1F;
+}
+
+.menu-header i.icon-left {
+  margin-right: 16px;
+  font-size: 24px;
+}
+
+/* Submenu */
 .submenu {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s ease-in-out;
-  padding-left: 20px;
+  transition: max-height 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
+
 .submenu.open {
   max-height: 500px;
 }
+
 .submenu .menu-item {
-  padding-left: 20px;
+  height: 44px;
+  padding-left: 64px;
+  font-size: 0.9rem;
 }
 
 .chevron {
+  font-size: 24px;
   transition: transform 0.3s ease;
-  font-size: 0.8rem;
+  color: #74777F;
 }
+
 .chevron.rotate {
   transform: rotate(180deg);
 }
 
-.footer { padding: 20px; }
+/* Footer */
+.footer {
+  padding: 24px 0;
+  border-top: 1px solid #F0F0F0;
+  margin-top: auto;
+}
 
 .btn-logout {
   width: 100%;
-  padding: 12px;
+  height: 48px;
   background: transparent;
-  border: 1px solid #EF5350;
-  color: #EF5350;
-  border-radius: 8px;
+  border: 1px solid #E0E0E0;
+  color: #5E5E5E;
+  border-radius: 24px;
   cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
 }
-.btn-logout:hover { background: #EF5350; color: white; }
 
+.btn-logout:hover {
+  background-color: #FFF0F0;
+  color: #D32F2F;
+  border-color: #FFCDD2;
+}
+
+/* Conteúdo Principal */
 .content {
   flex: 1;
   padding: 40px;
   overflow-y: auto;
+  /* O fundo transparente permite ver o degradê do body */
 }

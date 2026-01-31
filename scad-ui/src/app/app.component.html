@@ -1,55 +1,76 @@
-<div class="layout-container">
+<!-- LAYOUT DE LOGIN (Sem Sidebar) -->
+<ng-container *ngIf="!showSidebar">
+  <router-outlet></router-outlet>
+</ng-container>
 
-  <!-- MENU LATERAL COM NOVO ESTILO -->
+<!-- LAYOUT PRINCIPAL (Com Sidebar) -->
+<div class="layout-container" *ngIf="showSidebar">
+
+  <!-- MENU LATERAL -->
   <aside class="sidebar">
     <div class="brand">
-      <!-- APENAS A LOGO -->
       <img src="/assets/logo.jpeg" alt="" class="brand-logo">
-      <div class="user-name">{{ userName }}</div>
     </div>
 
     <nav class="menu">
-      <!-- Itens de Pesquisa (Sempre abertos) -->
+      <!-- Pesquisa -->
       <a routerLink="/pesquisar-livros" routerLinkActive="active" class="menu-item">
+        <i class="material-icons">search</i>
         <span>Pesquisar Livros</span>
       </a>
       <a routerLink="/pesquisar-autor" routerLinkActive="active" class="menu-item">
+        <i class="material-icons">person_search</i>
         <span>Pesquisar Autor</span>
       </a>
 
-      <!-- Seção de Gestão (Acordeão) -->
+      <!-- Gestão -->
       <div class="menu-section" *ngIf="isManager">
         <button class="menu-header" (click)="toggleMenu('gestao')">
-          <span>Gestão</span>
-          <span class="chevron" [class.rotate]="openMenu === 'gestao'">&#9660;</span> <!-- Seta simples -->
+          <div style="display: flex; align-items: center;">
+            <i class="material-icons icon-left">folder</i>
+            <span>Gestão</span>
+          </div>
+          <i class="material-icons chevron" [class.rotate]="openMenu === 'gestao'">expand_more</i>
         </button>
         <div class="submenu" [class.open]="openMenu === 'gestao'">
-          <a routerLink="/cadastro-livro" routerLinkActive="active" class="menu-item"><span>Cadastrar Livro</span></a>
-          <a routerLink="/cadastro-autor" routerLinkActive="active" class="menu-item"><span>Cadastrar Autor</span></a>
-          <a routerLink="/cadastro-cliente" routerLinkActive="active" class="menu-item"><span>Cadastrar Cliente</span></a>
+          <a routerLink="/cadastro-livro" routerLinkActive="active" class="menu-item">
+            <span>Cadastrar Livro</span>
+          </a>
+          <a routerLink="/cadastro-autor" routerLinkActive="active" class="menu-item">
+            <span>Cadastrar Autor</span>
+          </a>
+          <a routerLink="/cadastro-cliente" routerLinkActive="active" class="menu-item">
+            <span>Cadastrar Cliente</span>
+          </a>
         </div>
       </div>
 
-      <!-- Seção de Administração (Acordeão) -->
+      <!-- Administração -->
       <div class="menu-section" *ngIf="isAdmin">
         <button class="menu-header" (click)="toggleMenu('admin')">
-          <span>Administração</span>
-          <span class="chevron" [class.rotate]="openMenu === 'admin'">&#9660;</span> <!-- Seta simples -->
+          <div style="display: flex; align-items: center;">
+            <i class="material-icons icon-left">admin_panel_settings</i>
+            <span>Administração</span>
+          </div>
+          <i class="material-icons chevron" [class.rotate]="openMenu === 'admin'">expand_more</i>
         </button>
         <div class="submenu" [class.open]="openMenu === 'admin'">
-          <a routerLink="/cadastro-usuario" routerLinkActive="active" class="menu-item"><span>Cadastrar Usuário</span></a>
+          <a routerLink="/cadastro-usuario" routerLinkActive="active" class="menu-item">
+            <span>Cadastrar Usuário</span>
+          </a>
         </div>
       </div>
     </nav>
 
     <div class="footer">
       <button (click)="logout()" class="btn-logout">
+        <i class="material-icons">logout</i>
         <span>Sair</span>
       </button>
     </div>
   </aside>
 
-  <!-- ÁREA DE CONTEÚDO -->
+  <!-- CONTEÚDO -->
   <main class="content">
     <router-outlet></router-outlet>
   </main>

@@ -1,49 +1,47 @@
-<div class="card">
-    <div class="header">
-        <h1>Novo Usuário</h1>
-        <p>Preencha os dados para conceder acesso ao sistema.</p>
-    </div>
+<div class="form-container">
+    <h2>Novo Usuário</h2>
 
     <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
 
-        <div class="form-group">
-            <label>Nome de Usuário</label>
-            <input type="text" formControlName="username" class="form-control" placeholder="Ex: joaosilva">
+        <!-- Nome -->
+        <div class="material-textfield">
+            <input id="username" type="text" formControlName="username" placeholder=" ">
+            <label for="username">Nome de Usuário</label>
         </div>
 
-        <div class="form-group">
-            <label>E-mail Corporativo</label>
-            <input type="email" formControlName="email" class="form-control" placeholder="Ex: joao@scad.com">
+        <!-- Email -->
+        <div class="material-textfield">
+            <input id="email" type="email" formControlName="email" placeholder=" ">
+            <label for="email">E-mail Corporativo</label>
         </div>
 
-        <div class="form-group">
-            <label>Senha de Acesso</label>
-            <input type="password" formControlName="password" class="form-control" placeholder="******">
+        <!-- Senha -->
+        <div class="material-textfield">
+            <input id="password" type="password" formControlName="password" placeholder=" ">
+            <label for="password">Senha de Acesso</label>
         </div>
 
-        <div class="form-group">
-            <label>Perfil de Acesso (Role)</label>
-            <select formControlName="role" class="form-control select-role">
+        <!-- Role -->
+        <div class="material-textfield">
+            <select id="role" formControlName="role">
                 <option *ngFor="let role of roles" [value]="role.value">
                     {{ role.label }}
                 </option>
             </select>
-            <small class="hint">
-                * <strong>ADMIN:</strong> Acesso total. <br>
-                * <strong>GERENTE:</strong> Não cria usuários. <br>
-                * <strong>USUARIO:</strong> Apenas visualiza.
-            </small>
+            <label for="role">Perfil de Acesso</label>
         </div>
 
-        <div *ngIf="message" class="alert" [class.success]="!message.includes('Erro')">
-            {{ message }}
+        <!-- Mensagem -->
+        <div *ngIf="message" class="message" [class.error]="message.includes('Erro')" [class.success]="!message.includes('Erro')">
+            <i class="material-icons">{{ message.includes('Erro') ? 'error' : 'check_circle' }}</i>
+            <span>{{ message }}</span>
         </div>
 
-        <div class="actions">
-            <button type="submit" class="btn-primary" [disabled]="userForm.invalid || isLoading">
-                {{ isLoading ? 'Salvando...' : 'Cadastrar Usuário' }}
-            </button>
-        </div>
+        <!-- Botão -->
+        <button type="submit" class="btn-submit" [disabled]="userForm.invalid || isLoading">
+            <i class="material-icons" style="margin-right: 8px;">save</i>
+            {{ isLoading ? 'Salvando...' : 'Cadastrar Usuário' }}
+        </button>
 
     </form>
 </div>
